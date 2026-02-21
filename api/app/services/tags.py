@@ -11,21 +11,6 @@ def normalize_tag(raw: str) -> str:
     return raw.strip().lower()[:50]
 
 
-def normalize_tags(raw_tags: list[str]) -> list[str]:
-    """Apply normalize_tag to each tag, then deduplicate preserving order.
-
-    Returns unique normalized tags in the order first encountered.
-    """
-    seen: set[str] = set()
-    result: list[str] = []
-    for raw in raw_tags:
-        normalized = normalize_tag(raw)
-        if normalized and normalized not in seen:
-            seen.add(normalized)
-            result.append(normalized)
-    return result
-
-
 _VALID_TAG_PATTERN = re.compile(r"^[a-z0-9._-]+$")
 
 

@@ -32,7 +32,7 @@ async def submit_trace(
     """Submit a new trace for community validation.
 
     Passes through three gates before database write:
-    1. Authentication (CurrentUser dependency)
+    1. Authentication (RequireEmail dependency — email required for contributions)
     2. Write rate limit (WriteRateLimit dependency)
     3. PII / secrets scan (scan_trace_submission)
 

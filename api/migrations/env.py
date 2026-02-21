@@ -16,6 +16,8 @@ from app.models.trace import Trace       # noqa: F401
 from app.models.user import User         # noqa: F401
 from app.models.vote import Vote         # noqa: F401
 from app.models.tag import Tag, trace_tags  # noqa: F401
+from app.models.amendment import Amendment  # noqa: F401
+from app.models.reputation import ContributorDomainReputation  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
