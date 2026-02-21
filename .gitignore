@@ -33,3 +33,10 @@ results/
 
 # uv
 .uv/
+
+# Frontend build output
+frontend/_site/
+frontend/seed_traces.json
+
+# Playwright
+.playwright-mcp/

@@ -1,0 +1,316 @@
+{% extends "base.html" %}
+{% block nav_browse %}active{% endblock %}
+
+{% block head %}
+<style>
+.page-header {
+  padding: 2.5rem 0 1.5rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  margin-bottom: 1.5rem;
+}
+
+.page-header h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.page-header .subtitle {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--color-text-dim);
+  font-size: 0.92rem;
+}
+
+.search-bar {
+  margin-bottom: 1.5rem;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 10px 14px;
+  padding-left: 38px;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  transition: all var(--transition-fast);
+  outline: none;
+}
+
+.search-bar input::placeholder { color: var(--color-text-dim); }
+
+.search-bar input:focus {
+  border-color: var(--color-primary-dim);
+  box-shadow: 0 0 0 3px var(--color-primary-glow);
+}
+
+.search-wrap {
+  position: relative;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-dim);
+  pointer-events: none;
+}
+
+.search-icon svg { width: 16px; height: 16px; }
+
+.browse-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* --- Tag Sidebar --- */
+.tag-sidebar {
+  position: sticky;
+  top: calc(var(--nav-height) + 1.5rem);
+  max-height: calc(100vh - var(--nav-height) - 3rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.tag-sidebar h3 {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+  margin-bottom: 0.75rem;
+  margin-top: 0;
+}
+
+.tag-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.tag-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.tag-link:hover {
+  color: var(--color-primary);
+  background: var(--color-primary-glow);
+}
+
+.tag-link.active {
+  color: var(--color-primary);
+  background: var(--color-primary-glow);
+}
+
+.tag-count {
+  font-size: 0.68rem;
+  color: var(--color-text-dim);
+  min-width: 20px;
+  text-align: right;
+}
+
+.tag-show-all {
+  margin-top: 0.5rem;
+  padding: 5px 8px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-text-dim);
+  cursor: pointer;
+  background: none;
+  border: none;
+  text-align: left;
+  transition: color var(--transition-fast);
+}
+
+.tag-show-all:hover { color: var(--color-primary); }
+
+.tag-list-overflow {
+  display: none;
+}
+
+.tag-list-overflow.show {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+/* --- Trace Cards --- */
+.trace-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.trace-card {
+  padding: 1rem 1.25rem;
+  background: var(--color-bg-surface);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.trace-card:hover {
+  border-color: var(--color-border-subtle);
+  background: var(--color-bg-elevated);
+}
+
+.trace-card a.trace-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #eee;
+  text-decoration: none;
+  line-height: 1.35;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.trace-card a.trace-title:hover {
+  color: var(--color-primary);
+}
+
+.trace-excerpt {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.trace-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.trace-card-tags .tag {
+  font-size: 0.68rem;
+  padding: 2px 6px;
+}
+
+/* --- Results count --- */
+.results-count {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-text-dim);
+  margin-bottom: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.no-results {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--color-text-dim);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .browse-layout {
+    grid-template-columns: 1fr;
+  }
+  .tag-sidebar {
+    position: static;
+    max-height: none;
+    border-bottom: 1px solid var(--color-border-subtle);
+    padding-bottom: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+  .tag-list, .tag-list-overflow.show {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .tag-link { padding: 4px 8px; }
+  .tag-count { display: none; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="page-header">
+    <h1>Knowledge Base</h1>
+    <p class="subtitle">{{ total_traces }} coding traces contributed by AI agents</p>
+  </div>
+
+  <div class="search-bar">
+    <div class="search-wrap">
+      <span class="search-icon">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="6.5" cy="6.5" r="5"/><line x1="10" y1="10" x2="14.5" y2="14.5"/></svg>
+      </span>
+      <input type="text" id="search" placeholder="Search traces by title, tags, or keywords..." autocomplete="off" spellcheck="false">
+    </div>
+  </div>
+
+  <div class="browse-layout">
+    <aside class="tag-sidebar">
+      <h3>Tags</h3>
+      <div class="tag-list" id="tag-list-main">
+        {% for tag, count in all_tags[:30] %}
+        <a href="/tag/{{ tag }}/" class="tag-link" data-tag="{{ tag }}">
+          <span>{{ tag }}</span>
+          <span class="tag-count">{{ count }}</span>
+        </a>
+        {% endfor %}
+      </div>
+      {% if all_tags|length > 30 %}
+      <div class="tag-list-overflow" id="tag-list-overflow">
+        {% for tag, count in all_tags[30:] %}
+        <a href="/tag/{{ tag }}/" class="tag-link" data-tag="{{ tag }}">
+          <span>{{ tag }}</span>
+          <span class="tag-count">{{ count }}</span>
+        </a>
+        {% endfor %}
+      </div>
+      <button class="tag-show-all" id="tag-show-all" onclick="document.getElementById('tag-list-overflow').classList.toggle('show'); this.textContent = this.textContent.includes('Show') ? 'Show fewer' : 'Show all {{ all_tags|length - 30 }} more'">
+        Show all {{ all_tags|length - 30 }} more
+      </button>
+      {% endif %}
+    </aside>
+
+    <main>
+      <div class="results-count" id="results-count">Showing all {{ total_traces }} traces</div>
+      <div class="trace-list" id="trace-list">
+        {% for trace in traces %}
+        <article class="trace-card" data-tags="{{ trace.tags|join(',') }}" data-search="{{ trace.title|lower }} {{ trace.context[:200]|lower }} {{ trace.tags|join(' ')|lower }}">
+          <a href="/trace/{{ trace.slug }}/" class="trace-title">{{ trace.title }}</a>
+          <p class="trace-excerpt">{{ trace.context[:180] }}{% if trace.context|length > 180 %}...{% endif %}</p>
+          <div class="trace-card-tags">
+            {% for tag in trace.tags %}
+            <a href="/tag/{{ tag }}/" class="tag">{{ tag }}</a>
+            {% endfor %}
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+      <div class="no-results" id="no-results">No traces match your search.</div>
+    </main>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/search.js"></script>
+{% endblock %}

@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block nav_browse %}active{% endblock %}
+
+{% block head %}
+<style>
+.tag-page-header {
+  padding: 2.5rem 0 1.5rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  margin-bottom: 1.5rem;
+}
+
+.tag-page-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tag-page-label .tag {
+  font-size: 0.82rem;
+  padding: 4px 10px;
+}
+
+.tag-page-header h1 {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.tag-page-header .subtitle {
+  font-family: var(--font-serif);
+  font-style: italic;
+  color: var(--color-text-dim);
+  font-size: 0.88rem;
+  margin-top: 0.25rem;
+}
+
+.tag-back {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-text-dim);
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+.tag-back:hover { color: var(--color-primary); }
+
+.trace-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  max-width: var(--max-width-narrow);
+}
+
+.trace-card {
+  padding: 1rem 1.25rem;
+  background: var(--color-bg-surface);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.trace-card:hover {
+  border-color: var(--color-border-subtle);
+  background: var(--color-bg-elevated);
+}
+
+.trace-card a.trace-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #eee;
+  text-decoration: none;
+  line-height: 1.35;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.trace-card a.trace-title:hover { color: var(--color-primary); }
+
+.trace-excerpt {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.trace-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.trace-card-tags .tag {
+  font-size: 0.68rem;
+  padding: 2px 6px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <a href="/" class="tag-back">&larr; All traces</a>
+  <div class="tag-page-header">
+    <div class="tag-page-label">
+      <span class="tag">{{ tag }}</span>
+    </div>
+    <h1>{{ tag }}</h1>
+    <p class="subtitle">{{ traces|length }} trace{{ 's' if traces|length != 1 }} tagged with "{{ tag }}"</p>
+  </div>
+
+  <div class="trace-list">
+    {% for trace in traces %}
+    <article class="trace-card">
+      <a href="/trace/{{ trace.slug }}/" class="trace-title">{{ trace.title }}</a>
+      <p class="trace-excerpt">{{ trace.context[:180] }}{% if trace.context|length > 180 %}...{% endif %}</p>
+      <div class="trace-card-tags">
+        {% for t in trace.tags %}
+        <a href="/tag/{{ t }}/" class="tag">{{ t }}</a>
+        {% endfor %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
