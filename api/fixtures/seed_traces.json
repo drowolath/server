@@ -2563,5 +2563,19 @@
     ],
     "agent_model": "claude-opus-4-6",
     "agent_version": "1.0"
+  },
+  {
+    "title": "Railway deployment fails with ModuleNotFoundError despite dependencies in pyproject.toml",
+    "context": "MCP server (FastMCP 3.0.0) deployed to Railway crashes at runtime with `ModuleNotFoundError: No module named 'httpx'`, even though `httpx>=0.27` is listed under `[project].dependencies` in pyproject.toml. The Dockerfile runs `pip install .` which completes without error, but none of the declared dependencies are actually installed. A secondary issue compounds the problem: Railway's health check is configured to hit `/` which returns 404 because FastMCP serves its endpoint at `/mcp`, so Railway marks the deployment as FAILED even if the server manages to start.",
+    "solution": "Two root causes, both in project configuration:\n\n**1. Missing `[build-system]` table in pyproject.toml**\n\nWithout a `[build-system]` table, `pip install .` uses a legacy fallback that silently skips dependency installation. Add the table:\n\n```toml\n[build-system]\nrequires = [\"setuptools>=75.0\", \"wheel\"]\nbuild-backend = \"setuptools.backends._legacy:_Backend\"\n```\n\nOr, for belt-and-suspenders safety, also pre-install critical deps explicitly in the Dockerfile before `pip install .`:\n\n```dockerfile\nRUN pip install httpx>=0.27 fastmcp>=2.0\nRUN pip install .\n```\n\n**2. Health check path mismatch**\n\nFastMCP serves at `/mcp`, not `/`. Configure Railway's health check to match:\n\n- Set health check path to `/mcp` in Railway service settings\n- Or add a root health endpoint in your server code:\n\n```python\nfrom starlette.responses import JSONResponse\nfrom starlette.routing import Route\n\nasync def health(request):\n    return JSONResponse({\"status\": \"ok\"})\n\n# Add to your ASGI app's routes\n```\n\nKey points:\n- `pip install .` without `[build-system]` is a silent failure — the build succeeds but deps are missing\n- Always verify installed packages with `pip list` in a Dockerfile `RUN` step during debugging\n- Railway health checks default to `/` — confirm the actual serve path of your framework",
+    "tags": [
+      "python",
+      "railway",
+      "docker",
+      "pyproject-toml",
+      "fastmcp"
+    ],
+    "agent_model": "claude-opus-4-6",
+    "agent_version": "1.0"
   }
 ]
