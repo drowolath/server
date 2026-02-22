@@ -2,6 +2,7 @@
  * CommonTrace Hero Animation
  *
  * Interactive neural network / knowledge graph canvas animation.
+ * Adapted for LIGHT background — warm blues and teals on white/cream.
  * 250+ particles with connections, mouse interaction, accent colors.
  * Performance-optimized with requestAnimationFrame, throttled mouse events,
  * and device pixel ratio awareness.
@@ -23,16 +24,16 @@
     particleMaxSize: 2.5,
     particleMinSizeMobile: 0.8,
     particleMaxSizeMobile: 2,
-    connectionOpacity: 0.12,
-    connectionMouseOpacity: 0.3,
+    connectionOpacity: 0.08,
+    connectionMouseOpacity: 0.2,
     fps: 60,
     colors: [
-      { r: 99, g: 102, b: 241 },   // indigo (--accent)
-      { r: 167, g: 139, b: 250 },  // violet
-      { r: 236, g: 72, b: 153 },   // rose
-      { r: 129, g: 140, b: 248 },  // indigo lighter
-      { r: 196, g: 181, b: 253 },  // violet lighter
-      { r: 244, g: 114, b: 182 }   // rose lighter
+      { r: 51, g: 102, b: 204 },   // Wikipedia blue
+      { r: 100, g: 149, b: 237 },  // Cornflower blue
+      { r: 70, g: 130, b: 180 },   // Steel blue
+      { r: 72, g: 166, b: 167 },   // Teal
+      { r: 147, g: 197, b: 253 },  // Light blue
+      { r: 121, g: 92, b: 178 }    // Muted purple (visited link color)
     ]
   };
 
@@ -62,7 +63,7 @@
     var maxSize = mobile ? config.particleMaxSizeMobile : config.particleMaxSize;
     this.baseSize = minSize + Math.random() * (maxSize - minSize);
     this.size = this.baseSize;
-    this.baseAlpha = 0.3 + Math.random() * 0.5;
+    this.baseAlpha = 0.2 + Math.random() * 0.35;
     this.alpha = this.baseAlpha;
     this.pulsePhase = Math.random() * Math.PI * 2;
     this.pulseSpeed = 0.005 + Math.random() * 0.01;
@@ -95,7 +96,7 @@
         this.vx += dx * force;
         this.vy += dy * force;
         // Brighten near mouse
-        this.alpha = lerp(this.baseAlpha, 1, 1 - dist / mouseRadius);
+        this.alpha = lerp(this.baseAlpha, 0.8, 1 - dist / mouseRadius);
         this.size = lerp(this.baseSize, this.baseSize * 2, (1 - dist / mouseRadius) * 0.5);
       } else {
         this.alpha = this.baseAlpha;
@@ -107,8 +108,8 @@
     }
 
     // Gentle pulse
-    this.alpha += Math.sin(time * this.pulseSpeed + this.pulsePhase) * 0.08;
-    this.alpha = Math.max(0.1, Math.min(1, this.alpha));
+    this.alpha += Math.sin(time * this.pulseSpeed + this.pulsePhase) * 0.06;
+    this.alpha = Math.max(0.08, Math.min(0.7, this.alpha));
 
     // Damping to keep velocities in check
     this.vx *= 0.998;
@@ -298,11 +299,11 @@
       ctx.fillStyle = 'rgba(' + p.color.r + ',' + p.color.g + ',' + p.color.b + ',' + p.alpha.toFixed(3) + ')';
       ctx.fill();
 
-      // Draw glow for brighter particles
-      if (p.alpha > 0.6) {
+      // Draw subtle glow for brighter particles
+      if (p.alpha > 0.45) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size * 3, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(' + p.color.r + ',' + p.color.g + ',' + p.color.b + ',' + (p.alpha * 0.08).toFixed(3) + ')';
+        ctx.fillStyle = 'rgba(' + p.color.r + ',' + p.color.g + ',' + p.color.b + ',' + (p.alpha * 0.04).toFixed(3) + ')';
         ctx.fill();
       }
     }

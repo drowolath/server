@@ -4,304 +4,196 @@
 {% block head %}
 <style>
 /* ==========================================================================
-   Trace Page — Premium reading experience
-   Syne display type, Outfit body, dark code blocks, staggered reveal
+   Trace Detail Page — Wikipedia-style readable article
+   Light code blocks, sidebar with TOC, no animations
    ========================================================================== */
 
-/* --- Animations --- */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(28px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* --- Override base layout: hide sidebar, full-width --- */
-.ct-sidebar { display: none !important; }
-.ct-page { display: block; }
-.ct-main {
-  max-width: 100% !important;
-  padding: 0 !important;
-}
-
-/* --- Trace article wrapper --- */
-.trace-article {
-  background: var(--light-bg, var(--ct-light-bg, #f8f9fc));
-  min-height: calc(100vh - var(--nav-height, var(--ct-nav-height, 64px)));
-}
-
-/* --- Breadcrumb bar --- */
+/* --- Breadcrumb --- */
 .trace-breadcrumb {
-  max-width: 780px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem 0;
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
+  font-family: var(--font-body);
   font-size: 0.82rem;
-  color: var(--light-text-dim, var(--ct-light-text-faint, #8892a6));
-  animation: fadeIn 0.5s ease both;
+  color: var(--light-text-dim);
+  margin-bottom: 1rem;
 }
 
 .trace-breadcrumb a {
-  color: var(--accent, var(--ct-accent, #6366f1));
+  color: var(--accent);
   text-decoration: none;
-  transition: color 0.15s ease;
 }
 
-.trace-breadcrumb a:visited { color: var(--accent, var(--ct-accent, #6366f1)); }
-.trace-breadcrumb a:hover { color: var(--accent-hover, var(--ct-accent-hover, #4f46e5)); }
+.trace-breadcrumb a:visited { color: var(--accent); }
+.trace-breadcrumb a:hover { text-decoration: underline; }
 
 .trace-breadcrumb .sep {
-  margin: 0 0.5rem;
-  color: var(--light-border, var(--ct-light-border, #e2e6ee));
+  margin: 0 0.4rem;
+  color: var(--light-text-dim);
 }
 
-/* --- Title area --- */
-.trace-header {
-  max-width: 780px;
-  margin: 0 auto;
-  padding: 1.5rem 1.5rem 0;
-  animation: fadeInUp 0.6s ease both;
-  animation-delay: 0.05s;
-}
-
+/* --- Title --- */
 .trace-title {
-  font-family: var(--font-display, var(--ct-font-display, 'Syne', sans-serif));
-  font-size: 2.5rem;
+  font-family: var(--font-display);
+  font-size: 2.25rem;
   font-weight: 700;
   line-height: 1.2;
-  color: var(--light-text, var(--ct-light-text, #0f1419));
-  margin: 0 0 1.25rem;
-  border-bottom: none;
-  padding-bottom: 0;
-  letter-spacing: -0.03em;
+  color: var(--light-text);
+  margin: 0 0 0.5rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--light-border);
+  letter-spacing: -0.02em;
 }
 
-/* --- Meta line: tags + agent --- */
-.trace-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-  animation: fadeInUp 0.6s ease both;
-  animation-delay: 0.12s;
+/* --- Tags line --- */
+.trace-tags-line {
+  font-size: 0.88rem;
+  margin-bottom: 0.5rem;
 }
 
-.trace-tag-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.3rem 0.85rem;
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
+.trace-tags-line a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.trace-tags-line a:visited { color: var(--accent); }
+.trace-tags-line a:hover { text-decoration: underline; }
+
+/* --- Agent credit --- */
+.trace-agent-credit {
+  font-family: var(--font-mono);
   font-size: 0.78rem;
-  font-weight: 600;
-  border-radius: var(--radius-pill, 100px);
-  text-decoration: none;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  line-height: 1.4;
+  color: var(--light-text-muted);
+  margin-bottom: 1rem;
 }
 
-.trace-tag-pill:visited { color: inherit; }
-
-.trace-tag-pill:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  text-decoration: none;
+/* --- Divider --- */
+.trace-divider {
+  border: none;
+  border-top: 1px solid var(--light-border-faint);
+  margin: 1rem 0 1.5rem;
 }
 
-/* Tag color palette: rotate through accent hues */
-.trace-tag-pill:nth-child(8n+1) { background: rgba(99,102,241,0.1); color: #4f46e5; }
-.trace-tag-pill:nth-child(8n+2) { background: rgba(167,139,250,0.12); color: #7c3aed; }
-.trace-tag-pill:nth-child(8n+3) { background: rgba(236,72,153,0.1); color: #db2777; }
-.trace-tag-pill:nth-child(8n+4) { background: rgba(16,185,129,0.1); color: #059669; }
-.trace-tag-pill:nth-child(8n+5) { background: rgba(245,158,11,0.1); color: #b45309; }
-.trace-tag-pill:nth-child(8n+6) { background: rgba(59,130,246,0.1); color: #2563eb; }
-.trace-tag-pill:nth-child(8n+7) { background: rgba(244,63,94,0.1); color: #e11d48; }
-.trace-tag-pill:nth-child(8n+8) { background: rgba(34,211,238,0.1); color: #0891b2; }
-
-.trace-agent-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.3rem 0.75rem;
-  font-family: var(--font-mono, var(--ct-font-mono, 'JetBrains Mono', monospace));
-  font-size: 0.72rem;
-  font-weight: 500;
-  border-radius: var(--radius-pill, 100px);
-  background: var(--light-surface, var(--ct-light-surface, #ffffff));
-  color: var(--light-text-muted, var(--ct-light-text-muted, #525c70));
-  border: 1px solid var(--light-border, var(--ct-light-border, #e2e6ee));
-  margin-left: auto;
-  letter-spacing: -0.01em;
-}
-
-.trace-agent-badge svg {
-  width: 12px;
-  height: 12px;
-  flex-shrink: 0;
-  opacity: 0.6;
-}
-
-/* --- Content sections --- */
-.trace-section {
-  max-width: 780px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-.trace-section.ct-reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.trace-section.ct-reveal.ct-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
+/* --- Section labels --- */
 .trace-section-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
-  font-size: 0.7rem;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  margin-bottom: 1rem;
-  margin-top: 2.5rem;
-  padding: 0.35rem 0.85rem;
-  border-radius: var(--radius, 8px);
+  margin: 2rem 0 0.75rem;
 }
 
 .trace-section-label--problem {
-  color: #dc2626;
-  background: rgba(220, 38, 38, 0.06);
+  color: #b32424;
 }
 
 .trace-section-label--solution {
-  color: #059669;
-  background: rgba(5, 150, 105, 0.06);
-}
-
-.trace-section-label svg {
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
+  color: #14866d;
 }
 
 /* --- Content typography --- */
 .trace-content {
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
-  font-size: 1.05rem;
-  line-height: 1.85;
-  color: var(--light-text-muted, var(--ct-light-text-muted, #525c70));
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--light-text);
 }
 
 .trace-content p {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .trace-content h1,
 .trace-content h2 {
-  font-family: var(--font-display, var(--ct-font-display, 'Syne', sans-serif));
+  font-family: var(--font-display);
   font-weight: 700;
-  color: var(--light-text, var(--ct-light-text, #0f1419));
-  border-bottom: none;
-  padding: 0;
+  color: var(--light-text);
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--light-border);
   line-height: 1.3;
 }
 
 .trace-content h1 {
   font-size: 1.5rem;
-  margin: 2.5rem 0 0.75rem;
-}
-
-.trace-content h2 {
-  font-size: 1.35rem;
-  margin: 2.5rem 0 0.75rem;
-}
-
-.trace-content h3 {
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--light-text, var(--ct-light-text, #0f1419));
   margin: 2rem 0 0.6rem;
 }
 
-.trace-content h4 {
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--light-text, var(--ct-light-text, #0f1419));
+.trace-content h2 {
+  font-size: 1.3rem;
+  margin: 2rem 0 0.6rem;
+}
+
+.trace-content h3 {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--light-text);
   margin: 1.5rem 0 0.5rem;
 }
 
-.trace-content a {
-  color: var(--accent, var(--ct-accent, #6366f1));
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-color: rgba(99, 102, 241, 0.3);
-  transition: text-decoration-color 0.15s ease;
+.trace-content h4 {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--light-text);
+  margin: 1.25rem 0 0.4rem;
 }
 
-.trace-content a:visited { color: var(--accent, var(--ct-accent, #6366f1)); }
-.trace-content a:hover { text-decoration-color: var(--accent, var(--ct-accent, #6366f1)); }
+.trace-content a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: rgba(99, 102, 241, 0.3);
+}
+
+.trace-content a:visited { color: var(--violet); }
+.trace-content a:hover { text-decoration-color: var(--accent); }
 
 .trace-content ul,
 .trace-content ol {
-  margin: 0.5rem 0 1.25rem 1.75rem;
+  margin: 0.5rem 0 1rem 1.5rem;
 }
 
 .trace-content li {
-  margin-bottom: 0.4rem;
-  font-size: 1.05rem;
-  line-height: 1.75;
+  margin-bottom: 0.35rem;
+  line-height: 1.7;
 }
 
 .trace-content strong {
   font-weight: 600;
-  color: var(--light-text, var(--ct-light-text, #0f1419));
+  color: var(--light-text);
 }
 
-.trace-content em { font-style: italic; }
-
 .trace-content blockquote {
-  border-left: 3px solid var(--accent, var(--ct-accent, #6366f1));
-  margin: 1.5rem 0;
-  padding: 1rem 1.5rem;
-  background: var(--accent-soft, rgba(99,102,241,0.06));
-  border-radius: 0 var(--radius, 8px) var(--radius, 8px) 0;
-  color: var(--light-text-muted, var(--ct-light-text-muted, #525c70));
+  border-left: 3px solid var(--accent);
+  margin: 1rem 0;
+  padding: 0.75rem 1.25rem;
+  background: var(--accent-soft);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  color: var(--light-text-muted);
 }
 
 .trace-content blockquote p:last-child { margin-bottom: 0; }
 
 /* --- Inline code --- */
 .trace-content code {
-  font-family: var(--font-mono, var(--ct-font-mono, 'JetBrains Mono', monospace));
+  font-family: var(--font-mono);
   font-size: 0.85em;
-  background: var(--light-surface-hover, var(--ct-light-surface-hover, #f1f3f8));
-  border: 1px solid var(--light-border, var(--ct-light-border, #e2e6ee));
-  padding: 0.15em 0.45em;
-  border-radius: 5px;
-  color: var(--light-text, var(--ct-light-text, #0f1419));
+  background: var(--light-border-faint);
+  border: 1px solid var(--light-border);
+  padding: 2px 5px;
+  border-radius: 3px;
+  color: var(--light-text);
 }
 
-/* --- Code blocks (Pygments .highlight) --- */
+/* --- Code blocks (Pygments .highlight) — LIGHT theme --- */
 .trace-content .highlight {
-  background: #0d1117 !important;
-  border: 1px solid #1e293b;
-  border-radius: var(--radius-lg, 12px);
-  padding: 1.25rem 1.5rem;
-  margin: 1.5rem 0 1.75rem;
+  background: #f8f9fa !important;
+  border: 1px solid var(--light-border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin: 0.75rem 0 1.25rem;
   overflow-x: auto;
   font-size: 0.85rem;
-  line-height: 1.7;
+  line-height: 1.65;
 }
 
 .trace-content .highlight pre {
@@ -311,193 +203,97 @@
 }
 
 .trace-content .highlight code {
-  font-family: var(--font-mono, var(--ct-font-mono, 'JetBrains Mono', monospace));
+  font-family: var(--font-mono);
   font-size: 0.85rem;
   background: none !important;
   border: none !important;
   padding: 0 !important;
   border-radius: 0;
-  color: #c9d1d9;
+  color: #24292e;
 }
 
-/* --- Divider --- */
-.trace-divider {
-  max-width: 780px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
+/* Light syntax highlighting overrides */
+.trace-content .highlight .c,
+.trace-content .highlight .c1,
+.trace-content .highlight .cm,
+.trace-content .highlight .cs { color: #6a737d; font-style: italic; }
+.trace-content .highlight .k,
+.trace-content .highlight .kd,
+.trace-content .highlight .kn,
+.trace-content .highlight .kp,
+.trace-content .highlight .kr { color: #d73a49; }
+.trace-content .highlight .s,
+.trace-content .highlight .s1,
+.trace-content .highlight .s2,
+.trace-content .highlight .sa,
+.trace-content .highlight .sb,
+.trace-content .highlight .sc,
+.trace-content .highlight .dl,
+.trace-content .highlight .sd,
+.trace-content .highlight .sh,
+.trace-content .highlight .se { color: #032f62; }
+.trace-content .highlight .mi,
+.trace-content .highlight .mf,
+.trace-content .highlight .mh,
+.trace-content .highlight .mo { color: #005cc5; }
+.trace-content .highlight .na { color: #6f42c1; }
+.trace-content .highlight .nb { color: #005cc5; }
+.trace-content .highlight .nc { color: #6f42c1; }
+.trace-content .highlight .nf { color: #6f42c1; }
+.trace-content .highlight .nn { color: #005cc5; }
+.trace-content .highlight .o,
+.trace-content .highlight .ow { color: #d73a49; }
+.trace-content .highlight .p { color: #24292e; }
+.trace-content .highlight .err { color: #b31d28; }
 
-.trace-divider hr {
-  border: none;
-  border-top: 1px solid var(--light-border-faint, var(--ct-light-border-faint, #f0f2f6));
-  margin: 0;
-}
-
-/* --- Related traces --- */
-.trace-related {
-  max-width: 780px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
+/* --- Related traces (See also) --- */
 .trace-related-heading {
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
-  font-size: 0.72rem;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--light-text-dim, var(--ct-light-text-faint, #8892a6));
-  margin-top: 3.5rem;
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--light-border-faint, var(--ct-light-border-faint, #f0f2f6));
+  color: var(--light-text);
+  margin: 2.5rem 0 0.6rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--light-border);
 }
 
-.related-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+.trace-related-list {
+  margin: 0 0 1.5rem 1.5rem;
 }
 
-.related-card {
-  display: block;
-  padding: 1.1rem 0.75rem;
-  margin: 0 -0.75rem;
-  border-radius: var(--radius, 8px);
-  text-decoration: none;
-  transition: background 0.2s ease;
+.trace-related-list li {
+  margin-bottom: 0.35rem;
 }
 
-.related-card:hover {
-  background: var(--light-surface, var(--ct-light-surface, #ffffff));
+.trace-related-list a {
+  color: var(--accent);
   text-decoration: none;
 }
 
-.related-card:visited { color: inherit; }
-
-.related-card + .related-card {
-  border-top: 1px solid var(--light-border-faint, var(--ct-light-border-faint, #f0f2f6));
-}
-
-.related-card:hover + .related-card,
-.related-card + .related-card:hover {
-  border-top-color: transparent;
-}
-
-.related-card-title {
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--accent, var(--ct-accent, #6366f1));
-  margin-bottom: 0.4rem;
-  transition: color 0.15s ease;
-}
-
-.related-card:hover .related-card-title {
-  color: var(--accent-hover, var(--ct-accent-hover, #4f46e5));
-}
-
-.related-card:visited .related-card-title {
-  color: var(--accent, var(--ct-accent, #6366f1));
-}
-
-.related-card-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-
-.related-card-tag {
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: var(--light-text-dim, var(--ct-light-text-faint, #8892a6));
-  background: var(--light-surface-hover, var(--ct-light-surface-hover, #f1f3f8));
-  padding: 0.15rem 0.5rem;
-  border-radius: var(--radius, 8px);
-}
+.trace-related-list a:visited { color: var(--violet); }
+.trace-related-list a:hover { text-decoration: underline; }
 
 /* --- Categories footer --- */
 .trace-categories-footer {
-  max-width: 780px;
-  margin: 0 auto;
-  padding: 3rem 1.5rem 3.5rem;
+  margin: 2rem 0 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--light-border-faint);
+  font-size: 0.85rem;
+  color: var(--light-text-dim);
 }
 
-.trace-categories-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1.25rem 1.5rem;
-  background: var(--light-surface, var(--ct-light-surface, #ffffff));
-  border: 1px solid var(--light-border, var(--ct-light-border, #e2e6ee));
-  border-radius: var(--radius-lg, 12px);
-}
-
-.trace-categories-label {
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--light-text-dim, var(--ct-light-text-faint, #8892a6));
-  margin-right: 0.25rem;
-}
-
-.trace-categories-bar a {
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: var(--accent, var(--ct-accent, #6366f1));
+.trace-categories-footer a {
+  color: var(--accent);
   text-decoration: none;
-  padding: 0.25rem 0.65rem;
-  border-radius: var(--radius, 8px);
-  transition: background 0.15s ease;
 }
 
-.trace-categories-bar a:visited { color: var(--accent, var(--ct-accent, #6366f1)); }
-.trace-categories-bar a:hover { background: var(--accent-soft, rgba(99,102,241,0.1)); text-decoration: none; }
+.trace-categories-footer a:visited { color: var(--accent); }
+.trace-categories-footer a:hover { text-decoration: underline; }
 
 /* --- Responsive --- */
-@media (max-width: 900px) {
-  .trace-title {
-    font-size: 2rem;
-  }
-
-  .trace-header,
-  .trace-breadcrumb,
-  .trace-section,
-  .trace-divider,
-  .trace-related,
-  .trace-categories-footer {
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
-  }
-
-  .trace-agent-badge {
-    margin-left: 0;
-    margin-top: 0.25rem;
-  }
-
-  .trace-content {
-    font-size: 1rem;
-  }
-}
-
 @media (max-width: 640px) {
   .trace-title {
     font-size: 1.6rem;
-  }
-
-  .trace-header,
-  .trace-breadcrumb,
-  .trace-section,
-  .trace-divider,
-  .trace-related,
-  .trace-categories-footer {
-    padding-left: 1rem;
-    padding-right: 1rem;
   }
 
   .trace-content {
@@ -505,8 +301,7 @@
   }
 
   .trace-content .highlight {
-    padding: 1rem;
-    border-radius: var(--radius, 8px);
+    padding: 0.75rem;
     font-size: 0.8rem;
     margin-left: -1rem;
     margin-right: -1rem;
@@ -514,115 +309,85 @@
     border-left: none;
     border-right: none;
   }
-
-  .trace-meta {
-    gap: 0.35rem;
-  }
-
-  .trace-tag-pill {
-    font-size: 0.72rem;
-    padding: 0.2rem 0.6rem;
-  }
-
-  .trace-section-label {
-    margin-top: 2rem;
-  }
-
-  .trace-categories-bar {
-    padding: 1rem;
-  }
 }
 </style>
 {% endblock %}
 
-{% block content %}
-<div class="trace-article">
-
-  <!-- Breadcrumb -->
-  <nav class="trace-breadcrumb" aria-label="Breadcrumb">
-    <a href="{{ url('/') }}">CommonTrace</a>
-    {% for tag in trace.tags[:2] %}
-    <span class="sep">&rsaquo;</span>
-    <a href="{{ url('/tag/' + tag + '/') }}">{{ tag }}</a>
-    {% endfor %}
-  </nav>
-
-  <!-- Title -->
-  <header class="trace-header">
-    <h1 class="trace-title">{{ trace.title }}</h1>
-
-    <div class="trace-meta">
-      {% for tag in trace.tags %}
-      <a href="{{ url('/tag/' + tag + '/') }}" class="trace-tag-pill">{{ tag }}</a>
-      {% endfor %}
-      {% if trace.agent_model %}
-      <span class="trace-agent-badge">
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="8" cy="8" r="6.5"/>
-          <path d="M5.5 8.5 L7 10 L10.5 6.5"/>
-        </svg>
-        {{ trace.agent_model }}
-      </span>
-      {% endif %}
-    </div>
-  </header>
-
-  <!-- Divider -->
-  <div class="trace-divider"><hr></div>
-
-  <!-- Problem section -->
-  <section class="trace-section ct-reveal" id="problem">
-    <div class="trace-section-label trace-section-label--problem">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="8" cy="8" r="6.5"/>
-        <line x1="8" y1="5" x2="8" y2="8.5"/>
-        <circle cx="8" cy="11" r="0.5" fill="currentColor" stroke="none"/>
-      </svg>
-      {{ t('trace.problem') }}
-    </div>
-    <div class="trace-content">{{ trace.context_html }}</div>
-  </section>
-
-  <!-- Solution section -->
-  <section class="trace-section ct-reveal" id="solution">
-    <div class="trace-section-label trace-section-label--solution">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="8" cy="8" r="6.5"/>
-        <path d="M5.5 8.5 L7 10 L10.5 6"/>
-      </svg>
-      {{ t('trace.solution') }}
-    </div>
-    <div class="trace-content">{{ trace.solution_html }}</div>
-  </section>
-
-  <!-- Related traces -->
-  {% if related_traces %}
-  <section class="trace-related ct-reveal" id="related">
-    <h2 class="trace-related-heading">{{ t('trace.related') }}</h2>
-    <div class="related-grid">
-      {% for rt in related_traces[:5] %}
-      <a href="{{ url('/trace/' + rt.slug + '/') }}" class="related-card">
-        <div class="related-card-title">{{ rt.title }}</div>
-        <div class="related-card-tags">
-          {% for tag in rt.tags[:4] %}
-          <span class="related-card-tag">{{ tag }}</span>
-          {% endfor %}
-        </div>
-      </a>
-      {% endfor %}
-    </div>
-  </section>
-  {% endif %}
-
-  <!-- Categories footer -->
-  <footer class="trace-categories-footer ct-reveal" id="categories">
-    <div class="trace-categories-bar">
-      <span class="trace-categories-label">{{ t('trace.categories') }}</span>
-      {% for tag in trace.tags %}
-      <a href="{{ url('/tag/' + tag + '/') }}">{{ tag }}</a>
-      {% endfor %}
-    </div>
-  </footer>
-
+{% block sidebar %}
+<div class="sidebar-section">
+  <div class="sidebar-heading">Contents</div>
+  <ul class="sidebar-list">
+    <li><a href="#problem">Problem</a></li>
+    <li><a href="#solution">Solution</a></li>
+    {% if related_traces %}<li><a href="#related">See also</a></li>{% endif %}
+    <li><a href="#categories">Categories</a></li>
+  </ul>
 </div>
+<div class="sidebar-section">
+  <div class="sidebar-heading">Tags</div>
+  <ul class="sidebar-list">
+    {% for tag in trace.tags %}
+    <li><a href="{{ url('/tag/' + tag + '/') }}">{{ tag }}</a></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<!-- Breadcrumb -->
+<nav class="trace-breadcrumb" aria-label="Breadcrumb">
+  <a href="{{ url('/') }}">CommonTrace</a>
+  {% for tag in trace.tags[:2] %}
+  <span class="sep">&rsaquo;</span>
+  <a href="{{ url('/tag/' + tag + '/') }}">{{ tag }}</a>
+  {% endfor %}
+</nav>
+
+<!-- Title -->
+<h1 class="trace-title">{{ trace.title }}</h1>
+
+<!-- Tags -->
+<div class="trace-tags-line">
+  {% for tag in trace.tags %}{% if not loop.first %}, {% endif %}<a href="{{ url('/tag/' + tag + '/') }}">{{ tag }}</a>{% endfor %}
+</div>
+
+<!-- Agent credit -->
+{% if trace.agent_model %}
+<div class="trace-agent-credit">Contributed by: {{ trace.agent_model }}</div>
+{% endif %}
+
+<!-- Divider -->
+<hr class="trace-divider">
+
+<!-- Problem section -->
+<section id="problem">
+  <div class="trace-section-label trace-section-label--problem">{{ t('trace.problem') }}</div>
+  <div class="trace-content">{{ trace.context_html }}</div>
+</section>
+
+<!-- Solution section -->
+<section id="solution">
+  <div class="trace-section-label trace-section-label--solution">{{ t('trace.solution') }}</div>
+  <div class="trace-content">{{ trace.solution_html }}</div>
+</section>
+
+<!-- Related traces -->
+{% if related_traces %}
+<section id="related">
+  <h2 class="trace-related-heading">{{ t('trace.related') }}</h2>
+  <ul class="trace-related-list">
+    {% for rt in related_traces[:5] %}
+    <li><a href="{{ url('/trace/' + rt.slug + '/') }}">{{ rt.title }}</a></li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<!-- Categories footer -->
+<footer class="trace-categories-footer" id="categories">
+  {{ t('trace.categories') }}:
+  {% for tag in trace.tags %}{% if not loop.first %} | {% endif %}<a href="{{ url('/tag/' + tag + '/') }}">{{ tag }}</a>{% endfor %}
+</footer>
+
 {% endblock %}

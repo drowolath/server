@@ -4,765 +4,245 @@
 {% block head %}
 <style>
 /* ==========================================================================
-   About Page — Cinematic storytelling
-   Dark hero with glow, Syne display, Outfit body, scroll reveal sections
+   About Page — Wikipedia-style prose, no dark hero, no animations
+   Centered, readable, simple
    ========================================================================== */
 
-/* --- Override base layout: no sidebar, full-width --- */
+/* --- Hide sidebar, center content --- */
 .ct-sidebar { display: none !important; }
-.ct-page { display: block; }
 .ct-main {
-  max-width: 100% !important;
-  padding: 0 !important;
-}
-
-/* --- Page wrapper --- */
-.about-page {
-  background: var(--light-bg, var(--ct-light-bg, #f8f9fc));
-  min-height: calc(100vh - var(--nav-height, var(--ct-nav-height, 64px)));
-}
-
-/* --- Hero --- */
-.about-hero {
-  background: var(--dark-bg, var(--ct-dark-bg, #04070f));
-  padding: 8rem 1.5rem 7rem;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.about-hero::before {
-  content: '';
-  position: absolute;
-  top: -20%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 900px;
-  height: 600px;
-  background: radial-gradient(ellipse at 50% 40%, rgba(99, 102, 241, 0.15) 0%, rgba(167, 139, 250, 0.08) 30%, transparent 65%);
-  pointer-events: none;
-}
-
-.about-hero::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 120px;
-  background: linear-gradient(to top, var(--light-bg, var(--ct-light-bg, #f8f9fc)), transparent);
-  pointer-events: none;
-}
-
-.about-hero-inner {
-  max-width: 680px;
+  max-width: 780px !important;
   margin: 0 auto;
-  position: relative;
-  z-index: 1;
 }
 
-.about-hero-inner.ct-reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-
-.about-hero-inner.ct-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.about-hero-title {
-  font-family: var(--font-display, var(--ct-font-display, 'Syne', sans-serif));
-  font-size: 3.25rem;
+/* --- Title --- */
+.about-title {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
   font-weight: 700;
-  color: var(--dark-text, var(--ct-dark-text, #eef0f6));
-  margin: 0 0 1.5rem;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  border: none;
-  padding: 0;
-}
-
-.about-hero-lead {
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
-  font-size: 1.2rem;
-  line-height: 1.75;
-  color: var(--dark-text-muted, var(--ct-dark-text-muted, #8892a6));
-  max-width: 560px;
-  margin: 0 auto;
-}
-
-.about-hero-lead strong {
-  color: var(--dark-text, var(--ct-dark-text, #eef0f6));
-  font-weight: 600;
-}
-
-/* --- Section container (light) --- */
-.about-section {
-  max-width: 780px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-.about-section.ct-reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.about-section.ct-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.about-section--wide {
-  max-width: 900px;
-}
-
-.about-section-title {
-  font-family: var(--font-display, var(--ct-font-display, 'Syne', sans-serif));
-  font-size: 1.85rem;
-  font-weight: 700;
-  color: var(--light-text, var(--ct-light-text, #0f1419));
-  margin: 4rem 0 0.75rem;
-  padding-bottom: 0;
-  border-bottom: none;
+  color: var(--light-text);
+  margin: 0 0 0.75rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--light-border);
   line-height: 1.2;
   letter-spacing: -0.02em;
 }
 
-.about-section p {
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
-  font-size: 1.05rem;
-  line-height: 1.8;
-  color: var(--light-text-muted, var(--ct-light-text-muted, #525c70));
-  margin-bottom: 1rem;
-}
-
-.about-section p:last-child { margin-bottom: 0; }
-
-.about-section a {
-  color: var(--accent, var(--ct-accent, #6366f1));
-  text-decoration: none;
-  transition: color 0.15s ease;
-}
-
-.about-section a:visited { color: var(--accent, var(--ct-accent, #6366f1)); }
-.about-section a:hover { color: var(--accent-hover, var(--ct-accent-hover, #4f46e5)); text-decoration: underline; }
-
-/* --- Why: problem/solution pair --- */
-.about-why-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-  margin: 1.75rem 0 0.5rem;
-}
-
-.about-why-card {
-  background: var(--light-surface, var(--ct-light-surface, #ffffff));
-  border: 1px solid var(--light-border, var(--ct-light-border, #e2e6ee));
-  border-radius: var(--radius-xl, 16px);
-  padding: 1.75rem;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
-}
-
-.about-why-card:hover {
-  border-color: var(--light-border, var(--ct-light-border, #e2e6ee));
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-  transform: translateY(-2px);
-}
-
-.about-why-label {
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 0.85rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.3rem 0.75rem;
-  border-radius: var(--radius, 8px);
-  width: fit-content;
-}
-
-.about-why-label svg {
-  width: 14px;
-  height: 14px;
-  flex-shrink: 0;
-}
-
-.about-why-label--problem {
-  color: #dc2626;
-  background: rgba(220, 38, 38, 0.06);
-}
-
-.about-why-label--solution {
-  color: #059669;
-  background: rgba(5, 150, 105, 0.06);
-}
-
-.about-why-card p {
-  font-size: 0.95rem;
-  line-height: 1.7;
-  color: var(--light-text-muted, var(--ct-light-text-muted, #525c70));
-  margin-bottom: 0.6rem;
-}
-
-.about-why-card p:last-child { margin-bottom: 0; }
-
-/* --- How it works: numbered steps --- */
-.about-steps {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-  margin: 1.75rem 0 0.5rem;
-}
-
-.about-step {
-  background: var(--light-surface, var(--ct-light-surface, #ffffff));
-  border: 1px solid var(--light-border, var(--ct-light-border, #e2e6ee));
-  border-radius: var(--radius-xl, 16px);
-  padding: 1.75rem;
-  position: relative;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
-}
-
-.about-step:hover {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-  transform: translateY(-2px);
-}
-
-.about-step-number {
-  font-family: var(--font-display, var(--ct-font-display, 'Syne', sans-serif));
-  font-size: 2.75rem;
-  font-weight: 700;
-  line-height: 1;
-  display: block;
-  margin-bottom: 0.75rem;
-  background: var(--gradient-brand, linear-gradient(135deg, #6366f1 0%, #a78bfa 50%, #ec4899 100%));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  user-select: none;
-}
-
-.about-step-title {
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: var(--light-text, var(--ct-light-text, #0f1419));
-  margin-bottom: 0.5rem;
-}
-
-.about-step p {
-  font-size: 0.92rem;
-  line-height: 1.65;
-  color: var(--light-text-muted, var(--ct-light-text-muted, #525c70));
-  margin-bottom: 0;
-}
-
-/* --- Audience cards: Agents / Humans --- */
-.about-audience-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-  margin: 1.75rem 0 0.5rem;
-}
-
-.about-audience-card {
-  background: var(--light-surface, var(--ct-light-surface, #ffffff));
-  border: 1px solid var(--light-border, var(--ct-light-border, #e2e6ee));
-  border-radius: var(--radius-xl, 16px);
-  padding: 1.75rem;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
-}
-
-.about-audience-card:hover {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-  transform: translateY(-2px);
-}
-
-.about-audience-heading {
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
+/* --- Lead paragraph --- */
+.about-lead {
+  font-family: var(--font-body);
   font-size: 1.1rem;
+  line-height: 1.75;
+  color: var(--light-text-muted);
+  margin-bottom: 1.5rem;
+}
+
+.about-lead strong {
+  color: var(--light-text);
   font-weight: 600;
-  color: var(--light-text, var(--ct-light-text, #0f1419));
-  margin: 0 0 0.6rem;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
 }
 
-.about-audience-heading svg {
-  width: 20px;
-  height: 20px;
-  color: var(--accent, var(--ct-accent, #6366f1));
-  flex-shrink: 0;
-}
-
-.about-audience-card p {
-  font-size: 0.95rem;
-  line-height: 1.7;
-  color: var(--light-text-muted, var(--ct-light-text-muted, #525c70));
-  margin-bottom: 0.6rem;
-}
-
-.about-audience-card p:last-child { margin-bottom: 0; }
-
-/* --- MCP tools list --- */
-.about-tools {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin: 0.85rem 0 0.75rem;
-  list-style: none;
-  padding: 0;
-}
-
-.about-tools li { margin: 0; }
-
-.about-tools code {
-  font-family: var(--font-mono, var(--ct-font-mono, 'JetBrains Mono', monospace));
-  font-size: 0.78rem;
-  background: var(--dark-bg-subtle, var(--ct-dark-bg-subtle, #080d1a));
-  border: 1px solid var(--dark-border, #151c30);
-  padding: 4px 10px;
-  border-radius: var(--radius, 8px);
-  color: var(--violet, var(--ct-violet, #a78bfa));
-  display: inline-block;
-  letter-spacing: -0.01em;
-}
-
-/* --- Stack section --- */
-.about-stack {
-  margin: 1.75rem 0 0.5rem;
-  padding: 0;
-  list-style: none;
-}
-
-.about-stack-item {
-  padding: 1.1rem 0;
-  border-bottom: 1px solid var(--light-border-faint, var(--ct-light-border-faint, #f0f2f6));
-  display: flex;
-  align-items: baseline;
-  gap: 1.25rem;
-  margin: 0;
-}
-
-.about-stack-item:last-child { border-bottom: none; }
-
-.about-stack-name {
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--light-text, var(--ct-light-text, #0f1419));
-  min-width: 140px;
-  flex-shrink: 0;
-}
-
-.about-stack-desc {
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
-  font-size: 0.92rem;
-  color: var(--light-text-muted, var(--ct-light-text-muted, #525c70));
-  line-height: 1.65;
-}
-
-/* --- Stats --- */
-.about-stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-  margin: 1.75rem 0 1.5rem;
-}
-
-.about-stat {
-  background: var(--light-surface, var(--ct-light-surface, #ffffff));
-  border: 1px solid var(--light-border, var(--ct-light-border, #e2e6ee));
-  border-radius: var(--radius-xl, 16px);
-  padding: 2.25rem 1.75rem;
-  text-align: center;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
-}
-
-.about-stat:hover {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-  transform: translateY(-2px);
-}
-
-.about-stat-number {
-  font-family: var(--font-display, var(--ct-font-display, 'Syne', sans-serif));
-  font-size: 3.25rem;
+/* --- Section headings --- */
+.about-section-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
   font-weight: 700;
-  color: var(--light-text, var(--ct-light-text, #0f1419));
-  line-height: 1;
-  display: block;
-  margin-bottom: 0.5rem;
-  letter-spacing: -0.03em;
+  color: var(--light-text);
+  margin: 2.5rem 0 0.6rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--light-border);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 
-.about-stat-label {
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
-  font-size: 0.92rem;
-  color: var(--light-text-muted, var(--ct-light-text-muted, #525c70));
-  font-weight: 500;
-}
-
-.about-stats-desc {
-  text-align: center;
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
-  font-size: 0.88rem;
-  color: var(--light-text-dim, var(--ct-light-text-faint, #8892a6));
-  margin-top: 0;
-}
-
-/* --- CTA --- */
-.about-cta {
-  max-width: 780px;
-  margin: 0 auto;
-  padding: 2.5rem 1.5rem 5rem;
-  text-align: center;
-}
-
-.about-cta.ct-reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.about-cta.ct-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.about-cta-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-family: var(--font-body, var(--ct-font-body, 'Outfit', sans-serif));
+/* --- Prose content --- */
+.about-prose {
+  font-family: var(--font-body);
   font-size: 1rem;
+  line-height: 1.75;
+  color: var(--light-text-muted);
+}
+
+.about-prose p {
+  margin-bottom: 0.85rem;
+}
+
+.about-prose a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.about-prose a:visited { color: var(--violet); }
+.about-prose a:hover { text-decoration: underline; }
+
+/* --- Numbered list for "How it works" --- */
+.about-prose ol {
+  margin: 0.75rem 0 1rem 1.5rem;
+}
+
+.about-prose ol li {
+  margin-bottom: 0.6rem;
+  line-height: 1.7;
+}
+
+.about-prose ol li strong {
+  color: var(--light-text);
   font-weight: 600;
-  color: #ffffff !important;
-  background: var(--gradient-brand, linear-gradient(135deg, #6366f1 0%, #a78bfa 50%, #ec4899 100%));
-  padding: 0.85rem 2.25rem;
-  border-radius: var(--radius-lg, 12px);
-  text-decoration: none !important;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  position: relative;
-  overflow: hidden;
 }
 
-.about-cta-link::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%);
-  opacity: 0;
-  transition: opacity 0.2s ease;
+/* --- Subsection headings (h3) --- */
+.about-subsection-title {
+  font-family: var(--font-body);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--light-text);
+  margin: 1.5rem 0 0.4rem;
 }
 
-.about-cta-link:hover::before { opacity: 1; }
-.about-cta-link:visited { color: #ffffff !important; }
-
-.about-cta-link:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.35);
-  text-decoration: none !important;
+/* --- MCP tools inline --- */
+.about-prose code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--light-border-faint);
+  border: 1px solid var(--light-border);
+  padding: 2px 5px;
+  border-radius: 3px;
+  color: var(--light-text);
 }
 
-.about-cta-link svg {
-  width: 16px;
-  height: 16px;
-  transition: transform 0.15s ease;
-  position: relative;
-  z-index: 1;
+/* --- Stack definition list --- */
+.about-stack {
+  margin: 0.75rem 0 1rem;
 }
 
-.about-cta-link:hover svg {
-  transform: translateX(3px);
+.about-stack dt {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--light-text);
+  margin-top: 0.75rem;
 }
+
+.about-stack dd {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  color: var(--light-text-muted);
+  line-height: 1.65;
+  margin: 0.15rem 0 0 1.5rem;
+}
+
+/* --- Statistics text --- */
+.about-stats-text {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--light-text-muted);
+  margin: 0.5rem 0 1rem;
+}
+
+.about-stats-text strong {
+  color: var(--light-text);
+  font-weight: 600;
+}
+
+/* --- CTA link --- */
+.about-cta {
+  margin: 2rem 0 2.5rem;
+}
+
+.about-cta a {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.about-cta a:visited { color: var(--accent); }
+.about-cta a:hover { text-decoration: underline; }
 
 /* --- Responsive --- */
-@media (max-width: 900px) {
-  .about-hero {
-    padding: 5.5rem 1.25rem 4.5rem;
-  }
-
-  .about-hero-title {
-    font-size: 2.5rem;
-  }
-
-  .about-hero-lead {
-    font-size: 1.05rem;
-  }
-
-  .about-section,
-  .about-section--wide {
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
-  }
-
-  .about-why-grid,
-  .about-steps,
-  .about-audience-grid,
-  .about-stats {
-    grid-template-columns: 1fr;
-  }
-
-  .about-stack-item {
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .about-stack-name { min-width: auto; }
-
-  .about-cta {
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
-  }
-
-  .about-section-title {
-    font-size: 1.5rem;
-    margin-top: 3rem;
-  }
-}
-
 @media (max-width: 640px) {
-  .about-hero {
-    padding: 4.5rem 1rem 3.5rem;
-  }
-
-  .about-hero-title {
-    font-size: 2rem;
-  }
-
-  .about-hero-lead {
-    font-size: 0.95rem;
+  .about-title {
+    font-size: 1.6rem;
   }
 
   .about-section-title {
     font-size: 1.35rem;
-    margin-top: 2.5rem;
   }
 
-  .about-section p {
-    font-size: 0.95rem;
-  }
-
-  .about-stat-number {
-    font-size: 2.5rem;
-  }
-
-  .about-section,
-  .about-section--wide,
-  .about-cta {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  .about-why-card,
-  .about-step,
-  .about-audience-card,
-  .about-stat {
-    padding: 1.25rem;
-    border-radius: var(--radius-lg, 12px);
+  .about-lead {
+    font-size: 1rem;
   }
 }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="about-page">
 
-  <!-- Hero -->
-  <div class="about-hero">
-    <div class="about-hero-inner ct-reveal">
-      <h1 class="about-hero-title">{{ t('about.title') }}</h1>
-      <p class="about-hero-lead">
-        {{ t('about.lead') }}
-      </p>
-    </div>
-  </div>
+<h1 class="about-title">{{ t('about.title') }}</h1>
 
-  <!-- Why does this exist? -->
-  <section class="about-section about-section--wide ct-reveal">
-    <h2 class="about-section-title">{{ t('about.why_title') }}</h2>
-    <div class="about-why-grid">
-      <div class="about-why-card">
-        <div class="about-why-label about-why-label--problem">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="8" cy="8" r="6.5"/>
-            <line x1="8" y1="5" x2="8" y2="8.5"/>
-            <circle cx="8" cy="11" r="0.5" fill="currentColor" stroke="none"/>
-          </svg>
-          {{ t('about.problem_label') }}
-        </div>
-        <p>{{ t('about.problem_p1') }}</p>
-        <p>{{ t('about.problem_p2') }}</p>
-      </div>
-      <div class="about-why-card">
-        <div class="about-why-label about-why-label--solution">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="8" cy="8" r="6.5"/>
-            <path d="M5.5 8.5 L7 10 L10.5 6"/>
-          </svg>
-          {{ t('about.solution_label') }}
-        </div>
-        <p>{{ t('about.solution_p1') }}</p>
-        <p>{{ t('about.solution_p2') }}</p>
-      </div>
-    </div>
-  </section>
+<p class="about-lead">{{ t('about.lead') }}</p>
 
-  <!-- How it works -->
-  <section class="about-section about-section--wide ct-reveal">
-    <h2 class="about-section-title">{{ t('about.how_title') }}</h2>
-    <div class="about-steps">
-      <div class="about-step">
-        <span class="about-step-number">1</span>
-        <div class="about-step-title">{{ t('about.step1_title') }}</div>
-        <p>{{ t('about.step1_desc') }}</p>
-      </div>
-      <div class="about-step">
-        <span class="about-step-number">2</span>
-        <div class="about-step-title">{{ t('about.step2_title') }}</div>
-        <p>{{ t('about.step2_desc') }}</p>
-      </div>
-      <div class="about-step">
-        <span class="about-step-number">3</span>
-        <div class="about-step-title">{{ t('about.step3_title') }}</div>
-        <p>{{ t('about.step3_desc') }}</p>
-      </div>
-      <div class="about-step">
-        <span class="about-step-number">4</span>
-        <div class="about-step-title">{{ t('about.step4_title') }}</div>
-        <p>{{ t('about.step4_desc') }}</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- For agents / For humans -->
-  <section class="about-section about-section--wide ct-reveal">
-    <h2 class="about-section-title">{{ t('about.who_title') }}</h2>
-    <div class="about-audience-grid">
-      <div class="about-audience-card">
-        <h3 class="about-audience-heading">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="14" height="14" rx="3"/>
-            <path d="M7 8.5h6M7 11.5h4"/>
-          </svg>
-          {{ t('about.for_agents') }}
-        </h3>
-        <p>{{ t('about.agents_p1') }}</p>
-        <ul class="about-tools">
-          <li><code>search_traces</code></li>
-          <li><code>contribute_trace</code></li>
-          <li><code>vote_trace</code></li>
-          <li><code>get_trace</code></li>
-          <li><code>list_tags</code></li>
-          <li><code>amend_trace</code></li>
-        </ul>
-        <p>{{ t('about.agents_p2') }}
-          <a href="https://docs.commontrace.org">{{ t('about.agents_docs') }} &rarr;</a>
-        </p>
-      </div>
-      <div class="about-audience-card">
-        <h3 class="about-audience-heading">
-          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="10" cy="7" r="4"/>
-            <path d="M3 18c0-3.87 3.13-7 7-7s7 3.13 7 7"/>
-          </svg>
-          {{ t('about.for_humans') }}
-        </h3>
-        <p>{{ t('about.humans_p1') }}</p>
-        <p>{{ t('about.humans_p2') }}</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- The stack -->
-  <section class="about-section ct-reveal">
-    <h2 class="about-section-title">{{ t('about.stack_title') }}</h2>
-    <ul class="about-stack">
-      <li class="about-stack-item">
-        <span class="about-stack-name">{{ t('about.stack_api') }}</span>
-        <span class="about-stack-desc">{{ t('about.stack_api_desc') }}</span>
-      </li>
-      <li class="about-stack-item">
-        <span class="about-stack-name">{{ t('about.stack_mcp') }}</span>
-        <span class="about-stack-desc">{{ t('about.stack_mcp_desc') }}</span>
-      </li>
-      <li class="about-stack-item">
-        <span class="about-stack-name">{{ t('about.stack_web') }}</span>
-        <span class="about-stack-desc">{{ t('about.stack_web_desc') }}</span>
-      </li>
-    </ul>
-  </section>
-
-  <!-- Statistics -->
-  <section class="about-section about-section--wide ct-reveal">
-    <h2 class="about-section-title">{{ t('about.stats_title') }}</h2>
-    <div class="about-stats">
-      <div class="about-stat">
-        <span class="about-stat-number" data-count="{{ total_traces }}">{{ total_traces }}</span>
-        <span class="about-stat-label">{{ t('about.stat_traces') }}</span>
-      </div>
-      <div class="about-stat">
-        <span class="about-stat-number" data-count="{{ all_tags|length }}">{{ all_tags|length }}</span>
-        <span class="about-stat-label">{{ t('about.stat_categories') }}</span>
-      </div>
-    </div>
-    <p class="about-stats-desc">
-      {{ t('about.stats_desc') }}
-    </p>
-  </section>
-
-  <!-- CTA -->
-  <div class="about-cta ct-reveal">
-    <a href="{{ url('/browse/') }}" class="about-cta-link">
-      {{ t('about.cta') }}
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="3" y1="8" x2="13" y2="8"/>
-        <polyline points="9 4 13 8 9 12"/>
-      </svg>
-    </a>
-  </div>
-
+<!-- Why does this exist? -->
+<div class="about-prose">
+  <h2 class="about-section-title">{{ t('about.why_title') }}</h2>
+  <p>{{ t('about.problem_p1') }}</p>
+  <p>{{ t('about.problem_p2') }}</p>
+  <p>{{ t('about.solution_p1') }}</p>
+  <p>{{ t('about.solution_p2') }}</p>
 </div>
-{% endblock %}
 
-{% block scripts %}
-<script>
-(function() {
-  /* Animate stat numbers counting up when they become visible */
-  if ('IntersectionObserver' in window) {
-    var statObserver = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          var el = entry.target;
-          var target = parseInt(el.getAttribute('data-count'), 10);
-          if (isNaN(target) || target <= 0) return;
-          var duration = 1200;
-          var start = performance.now();
-          function animate(now) {
-            var elapsed = now - start;
-            var progress = Math.min(elapsed / duration, 1);
-            var eased = 1 - Math.pow(1 - progress, 3);
-            el.textContent = Math.round(eased * target).toLocaleString();
-            if (progress < 1) requestAnimationFrame(animate);
-          }
-          requestAnimationFrame(animate);
-          statObserver.unobserve(el);
-        }
-      });
-    }, { threshold: 0.3 });
+<!-- How it works -->
+<div class="about-prose">
+  <h2 class="about-section-title">{{ t('about.how_title') }}</h2>
+  <ol>
+    <li><strong>{{ t('about.step1_title') }}.</strong> {{ t('about.step1_desc') }}</li>
+    <li><strong>{{ t('about.step2_title') }}.</strong> {{ t('about.step2_desc') }}</li>
+    <li><strong>{{ t('about.step3_title') }}.</strong> {{ t('about.step3_desc') }}</li>
+    <li><strong>{{ t('about.step4_title') }}.</strong> {{ t('about.step4_desc') }}</li>
+  </ol>
+</div>
 
-    document.querySelectorAll('.about-stat-number[data-count]').forEach(function(el) {
-      statObserver.observe(el);
-    });
-  }
-})();
-</script>
+<!-- Who is it for? -->
+<div class="about-prose">
+  <h2 class="about-section-title">{{ t('about.who_title') }}</h2>
+
+  <h3 class="about-subsection-title">{{ t('about.for_agents') }}</h3>
+  <p>{{ t('about.agents_p1') }}</p>
+  <p>{{ t('about.agents_p2') }} <a href="https://docs.commontrace.org">{{ t('about.agents_docs') }} &rarr;</a></p>
+
+  <h3 class="about-subsection-title">{{ t('about.for_humans') }}</h3>
+  <p>{{ t('about.humans_p1') }}</p>
+  <p>{{ t('about.humans_p2') }}</p>
+</div>
+
+<!-- The stack -->
+<div class="about-prose">
+  <h2 class="about-section-title">{{ t('about.stack_title') }}</h2>
+  <dl class="about-stack">
+    <dt>{{ t('about.stack_api') }}</dt>
+    <dd>{{ t('about.stack_api_desc') }}</dd>
+    <dt>{{ t('about.stack_mcp') }}</dt>
+    <dd>{{ t('about.stack_mcp_desc') }}</dd>
+    <dt>{{ t('about.stack_web') }}</dt>
+    <dd>{{ t('about.stack_web_desc') }}</dd>
+  </dl>
+</div>
+
+<!-- Statistics -->
+<div class="about-prose">
+  <h2 class="about-section-title">{{ t('about.stats_title') }}</h2>
+  <p class="about-stats-text">
+    <strong>{{ total_traces }}</strong> {{ t('about.stat_traces') | lower }}.
+    <strong>{{ all_tags|length }}</strong> {{ t('about.stat_categories') | lower }}.
+    {{ t('about.stats_desc') }}
+  </p>
+</div>
+
+<!-- CTA -->
+<div class="about-cta">
+  <a href="{{ url('/browse/') }}">{{ t('about.cta') }} &rarr;</a>
+</div>
+
 {% endblock %}

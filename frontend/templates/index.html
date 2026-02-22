@@ -3,155 +3,52 @@
 {% block sidebar_browse %}active{% endblock %}
 
 {% block head %}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ==========================================================================
    Browse Page — All Traces
-   Stripe-meets-Wikipedia: clean, spacious, information-dense
-   Uses shared design system tokens
+   Wikipedia-style content-first listing with sidebar
    ========================================================================== */
 
-/* --- Design System Tokens (shared with other redesigned pages) --- */
-:root {
-  --dark-bg: #04070f;
-  --dark-text: #eef0f6;
-  --dark-text-muted: #8892a6;
-  --light-bg: #f8f9fc;
-  --light-surface: #ffffff;
-  --light-surface-hover: #f1f3f8;
-  --light-border: #e2e6ee;
-  --light-border-faint: #f0f2f6;
-  --light-text: #0f1419;
-  --light-text-muted: #525c70;
-  --light-text-dim: #8892a6;
-  --accent: #6366f1;
-  --accent-hover: #4f46e5;
-  --accent-soft: rgba(99,102,241,0.1);
-  --violet: #a78bfa;
-  --violet-soft: rgba(167,139,250,0.1);
-  --gradient-brand: linear-gradient(135deg, #6366f1 0%, #a78bfa 50%, #ec4899 100%);
-  --font-display: 'Syne', system-ui, sans-serif;
-  --font-body: 'Outfit', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --nav-height: 64px;
-  --max-width: 1200px;
-  --content-width: 800px;
-  --radius: 8px;
-  --radius-lg: 12px;
-  --radius-pill: 100px;
-}
-
-/* --- Animations --- */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* --- Override base layout: hide sidebar, full-width content --- */
-.ct-sidebar { display: none !important; }
-.ct-page { display: block; max-width: 100%; }
-.ct-main {
-  max-width: 100% !important;
-  padding: 0 !important;
-}
-
-/* Legacy overrides */
-.page-sidebar { display: none !important; }
-.page-wrap { display: block; }
-.page-content {
-  max-width: 100% !important;
-  padding: 0 !important;
-}
-
-/* --- Page wrapper --- */
-.browse-page {
-  background: var(--light-bg);
-  min-height: calc(100vh - var(--nav-height));
-}
-
-/* --- Hero / Search area --- */
-.browse-hero {
-  max-width: var(--content-width);
-  margin: 0 auto;
-  padding: 3.5rem 1.5rem 0;
-  text-align: center;
-  animation: fadeInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
-}
-
+/* --- Page title --- */
 .browse-title {
   font-family: var(--font-display);
-  font-size: 2.5rem;
+  font-size: 2.25rem;
   font-weight: 700;
   color: var(--light-text);
-  margin: 0 0 0.5rem;
-  border-bottom: none;
-  padding: 0;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
+  margin: 0 0 0.4rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--light-border);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 
 .browse-subtitle {
   font-family: var(--font-body);
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 400;
   color: var(--light-text-muted);
-  margin: 0 0 2.25rem;
+  margin: 0 0 1.5rem;
   line-height: 1.6;
-}
-
-.browse-subtitle strong {
-  color: var(--light-text);
-  font-weight: 600;
 }
 
 /* --- Search bar --- */
 .browse-search-wrap {
-  position: relative;
-  max-width: 580px;
-  margin: 0 auto 2rem;
-  animation: fadeInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
-  animation-delay: 0.08s;
-}
-
-.browse-search-icon {
-  position: absolute;
-  left: 1.25rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  color: var(--light-text-dim);
-  pointer-events: none;
-  transition: color 0.2s ease;
+  margin: 0 0 1rem;
 }
 
 .browse-search-input {
   width: 100%;
-  padding: 1rem 1.25rem 1rem 3.25rem;
+  padding: 0.6rem 0.75rem;
   font-family: var(--font-body);
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 400;
-  border: 1.5px solid var(--light-border);
-  border-radius: var(--radius-lg);
+  border: 1px solid var(--light-border);
+  border-radius: var(--radius);
   background: var(--light-surface);
   color: var(--light-text);
   outline: none;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  transition: border-color 0.15s ease;
   -webkit-appearance: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .browse-search-input::placeholder {
@@ -161,130 +58,57 @@
 
 .browse-search-input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-soft), 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-.browse-search-input:focus ~ .browse-search-icon {
-  color: var(--accent);
-}
-
-/* --- Tag filter pills --- */
+/* --- Tag filter links --- */
 .browse-tags {
-  max-width: 740px;
-  margin: 0 auto 2.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.5rem;
-  animation: fadeInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
-  animation-delay: 0.14s;
+  margin: 0 0 1.25rem;
+  font-size: 0.85rem;
+  line-height: 1.8;
 }
 
-.browse-tag-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.4rem 0.85rem;
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: var(--light-text-muted);
-  background: var(--light-surface);
-  border: 1px solid var(--light-border);
-  border-radius: var(--radius-pill);
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
-  line-height: 1.4;
-}
-
-.browse-tag-pill:visited {
-  color: var(--light-text-muted);
-}
-
-.browse-tag-pill:hover {
-  border-color: var(--accent);
+.browse-tags .tag-link {
   color: var(--accent);
-  background: var(--accent-soft);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.12);
   text-decoration: none;
+  font-weight: 400;
+  cursor: pointer;
 }
 
-.browse-tag-pill.active {
-  background: var(--accent);
-  color: #ffffff;
-  border-color: var(--accent);
-  box-shadow: 0 2px 12px rgba(99, 102, 241, 0.3);
+.browse-tags .tag-link:visited {
+  color: var(--accent);
 }
 
-.browse-tag-pill.active:visited {
-  color: #ffffff;
+.browse-tags .tag-link:hover {
+  text-decoration: underline;
 }
 
-.browse-tag-pill.active:hover {
-  background: var(--accent-hover);
-  border-color: var(--accent-hover);
-  color: #ffffff;
-  transform: translateY(-1px);
+.browse-tags .tag-link.active {
+  font-weight: 700;
+  background: var(--accent-soft);
+  padding: 1px 5px;
+  border-radius: 3px;
 }
 
-.browse-tag-count {
-  font-size: 0.72rem;
-  font-weight: 500;
-  opacity: 0.55;
+.browse-tags .tag-sep {
+  color: var(--light-text-dim);
+  margin: 0 0.15rem;
 }
 
-.browse-tag-pill.active .browse-tag-count {
-  opacity: 0.8;
-}
-
-/* --- Divider line --- */
-.browse-divider {
-  max-width: var(--content-width);
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-.browse-divider hr {
-  border: none;
-  border-top: 1px solid var(--light-border);
-  margin: 0;
-}
-
-/* --- Results info --- */
-.browse-results-bar {
-  max-width: var(--content-width);
-  margin: 0 auto;
-  padding: 1.25rem 1.5rem 0;
-  animation: fadeIn 0.5s ease both;
-  animation-delay: 0.18s;
-}
-
+/* --- Results count --- */
 .browse-results-count {
   font-family: var(--font-body);
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   color: var(--light-text-dim);
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  font-weight: 400;
+  margin: 0 0 0.5rem;
+  display: block;
 }
 
 /* --- Trace list --- */
-.browse-trace-list {
-  max-width: var(--content-width);
-  margin: 0 auto;
-  padding: 0.5rem 1.5rem 4rem;
-  animation: fadeInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) both;
-  animation-delay: 0.22s;
-}
-
 .trace-item {
   display: block;
-  padding: 1.35rem 0.75rem;
-  margin: 0 -0.75rem;
+  padding: 0.75rem 0;
   border-bottom: 1px solid var(--light-border-faint);
-  border-radius: var(--radius);
-  transition: background 0.2s ease;
 }
 
 .trace-item:last-child {
@@ -298,269 +122,138 @@
 .trace-item-title {
   display: block;
   font-family: var(--font-body);
-  font-size: 1.08rem;
-  font-weight: 600;
-  color: var(--light-text);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--accent);
   text-decoration: none;
-  margin-bottom: 0.35rem;
-  line-height: 1.45;
-  letter-spacing: -0.01em;
-  transition: color 0.2s ease;
+  margin-bottom: 0.2rem;
+  line-height: 1.4;
 }
 
 .trace-item-title:visited {
-  color: var(--light-text);
+  color: var(--violet);
 }
 
 .trace-item-title:hover {
-  color: var(--accent);
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 .trace-item-excerpt {
   font-family: var(--font-body);
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   font-weight: 400;
   color: var(--light-text-muted);
-  line-height: 1.65;
-  margin: 0 0 0.6rem;
+  line-height: 1.55;
+  margin: 0 0 0.35rem;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
 .trace-item-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
+  font-size: 0.78rem;
+  color: var(--light-text-dim);
 }
 
-.trace-item-tag {
-  display: inline-block;
-  font-family: var(--font-body);
-  font-size: 0.73rem;
-  font-weight: 500;
+.trace-item-tags a {
   color: var(--light-text-dim);
-  background: var(--light-border-faint);
-  padding: 0.15rem 0.55rem;
-  border-radius: 4px;
   text-decoration: none;
-  transition: color 0.15s ease, background 0.15s ease;
 }
 
-.trace-item-tag:visited {
+.trace-item-tags a:visited {
   color: var(--light-text-dim);
 }
 
-.trace-item-tag:hover {
+.trace-item-tags a:hover {
   color: var(--accent);
-  background: var(--accent-soft);
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 /* --- No results --- */
 .browse-no-results {
-  max-width: var(--content-width);
-  margin: 0 auto;
-  padding: 4rem 1.5rem;
+  padding: 2.5rem 0;
   text-align: center;
   display: none;
 }
 
-.browse-no-results-icon {
-  width: 56px;
-  height: 56px;
-  color: var(--light-border);
-  margin-bottom: 1.25rem;
-}
-
 .browse-no-results-text {
   font-family: var(--font-body);
-  font-size: 1.05rem;
-  font-weight: 500;
+  font-size: 0.95rem;
   color: var(--light-text-dim);
+  margin-bottom: 0.3rem;
 }
 
 .browse-no-results-hint {
   font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 400;
+  font-size: 0.85rem;
   color: var(--light-text-dim);
   opacity: 0.7;
-  margin-top: 0.5rem;
 }
 
-/* --- Responsive: 900px --- */
-@media (max-width: 900px) {
-  .browse-hero {
-    padding: 2.5rem 1.25rem 0;
-  }
-
-  .browse-title {
-    font-size: 2rem;
-  }
-
-  .browse-subtitle {
-    font-size: 1rem;
-  }
-
-  .browse-results-bar,
-  .browse-trace-list,
-  .browse-divider {
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
-  }
-
-  .browse-tags {
-    gap: 0.4rem;
-  }
-}
-
-/* --- Responsive: 640px --- */
+/* --- Responsive --- */
 @media (max-width: 640px) {
-  .browse-hero {
-    padding: 1.75rem 1rem 0;
-  }
-
   .browse-title {
-    font-size: 1.65rem;
-  }
-
-  .browse-subtitle {
-    font-size: 0.95rem;
-    margin-bottom: 1.75rem;
-  }
-
-  .browse-search-input {
-    font-size: 0.95rem;
-    padding: 0.85rem 1rem 0.85rem 2.75rem;
-    border-radius: 10px;
-  }
-
-  .browse-search-icon {
-    left: 0.9rem;
-    width: 17px;
-    height: 17px;
-  }
-
-  .browse-tags {
-    gap: 0.35rem;
-    margin-bottom: 2rem;
-  }
-
-  .browse-tag-pill {
-    font-size: 0.76rem;
-    padding: 0.3rem 0.65rem;
-  }
-
-  .browse-results-bar,
-  .browse-trace-list,
-  .browse-divider {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  .trace-item {
-    padding: 1.1rem 0.5rem;
-    margin: 0 -0.5rem;
+    font-size: 1.6rem;
   }
 
   .trace-item-title {
-    font-size: 0.98rem;
-  }
-
-  .trace-item-excerpt {
-    font-size: 0.87rem;
-  }
-
-  .browse-no-results {
-    padding: 3rem 1rem;
-  }
-}
-
-/* --- Accessibility: Reduced Motion --- */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    font-size: 0.95rem;
   }
 }
 </style>
 {% endblock %}
 
-{% block content %}
-<div class="browse-page">
-
-  <!-- Hero: title + search -->
-  <div class="browse-hero">
-    <h1 class="browse-title">{{ t('browse.title') }}</h1>
-    <p class="browse-subtitle">
-      {{ t('browse.subtitle', count=total_traces) }}
-    </p>
-
-    <div class="browse-search-wrap">
-      <svg class="browse-search-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="8.5" cy="8.5" r="6"/>
-        <line x1="13" y1="13" x2="18" y2="18"/>
-      </svg>
-      <input
-        type="text"
-        id="search"
-        class="browse-search-input"
-        placeholder="{{ t('browse.search_placeholder') }}"
-        autocomplete="off"
-        spellcheck="false"
-      >
-    </div>
-
-    <!-- Tag filters -->
-    <div class="browse-tags">
-      {% for tag, count in all_tags[:24] %}
-      <a href="{{ url('/tag/' + tag + '/') }}" class="browse-tag-pill tag-link" data-tag="{{ tag }}">
-        {{ tag }}
-        <span class="browse-tag-count">{{ count }}</span>
-      </a>
-      {% endfor %}
-    </div>
-  </div>
-
-  <!-- Divider -->
-  <div class="browse-divider"><hr></div>
-
-  <!-- Results count -->
-  <div class="browse-results-bar">
-    <span class="browse-results-count" id="results-count">{{ t('browse.showing_all', count=total_traces) }}</span>
-  </div>
-
-  <!-- Trace list -->
-  <div class="browse-trace-list" id="trace-list" data-i18n-showing-all="{{ t('search.showing_all', count='__COUNT__') }}" data-i18n-singular="{{ t('search.trace_singular') }}" data-i18n-plural="{{ t('search.trace_plural') }}" data-i18n-matching="{{ t('search.matching') }}">
-    {% for trace in traces %}
-    <article class="trace-item" data-tags="{{ trace.tags|join(',') }}" data-search="{{ trace.title|lower }} {{ trace.context[:200]|lower }} {{ trace.tags|join(' ')|lower }}">
-      <a href="{{ url('/trace/' + trace.slug + '/') }}" class="trace-item-title">{{ trace.title }}</a>
-      <p class="trace-item-excerpt">{{ trace.context[:200] }}{% if trace.context|length > 200 %}...{% endif %}</p>
-      <div class="trace-item-tags">
-        {% for tag in trace.tags %}
-        <a href="{{ url('/tag/' + tag + '/') }}" class="trace-item-tag">{{ tag }}</a>
-        {% endfor %}
-      </div>
-    </article>
+{% block sidebar %}
+<div class="sidebar-section">
+  <div class="sidebar-heading">{{ t('sidebar.categories') if t('sidebar.categories') != 'sidebar.categories' else 'Categories' }}</div>
+  <ul class="sidebar-list">
+    {% for tag, count in all_tags[:15] %}
+    <li><a href="{{ url('/tag/' + tag + '/') }}" class="sidebar-tag-link tag-link" data-tag="{{ tag }}">{{ tag }} <span class="sidebar-tag-count">{{ count }}</span></a></li>
     {% endfor %}
-  </div>
-
-  <!-- No results -->
-  <div class="browse-no-results" id="no-results">
-    <svg class="browse-no-results-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="11" cy="11" r="8"/>
-      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-      <line x1="8" y1="11" x2="14" y2="11"/>
-    </svg>
-    <div class="browse-no-results-text">{{ t('browse.no_results') }}</div>
-    <div class="browse-no-results-hint">{{ t('browse.no_results_hint') }}</div>
-  </div>
-
+  </ul>
 </div>
+{% endblock %}
+
+{% block content %}
+
+<h1 class="browse-title">{{ t('browse.title') }}</h1>
+<p class="browse-subtitle">{{ t('browse.subtitle', count=total_traces) }}</p>
+
+<div class="browse-search-wrap">
+  <input
+    type="text"
+    id="search"
+    class="browse-search-input"
+    placeholder="{{ t('browse.search_placeholder') }}"
+    autocomplete="off"
+    spellcheck="false"
+  >
+</div>
+
+<div class="browse-tags">
+  {% for tag, count in all_tags[:24] %}{% if not loop.first %}<span class="tag-sep"> | </span>{% endif %}<a href="{{ url('/tag/' + tag + '/') }}" class="tag-link" data-tag="{{ tag }}">{{ tag }}</a>{% endfor %}
+</div>
+
+<span class="browse-results-count" id="results-count">{{ t('browse.showing_all', count=total_traces) }}</span>
+
+<div id="trace-list" data-i18n-showing-all="{{ t('search.showing_all', count='__COUNT__') }}" data-i18n-singular="{{ t('search.trace_singular') }}" data-i18n-plural="{{ t('search.trace_plural') }}" data-i18n-matching="{{ t('search.matching') }}">
+  {% for trace in traces %}
+  <article class="trace-item" data-tags="{{ trace.tags|join(',') }}" data-search="{{ trace.title|lower }} {{ trace.context[:200]|lower }} {{ trace.tags|join(' ')|lower }}">
+    <a href="{{ url('/trace/' + trace.slug + '/') }}" class="trace-item-title">{{ trace.title }}</a>
+    <p class="trace-item-excerpt">{{ trace.context[:200] }}{% if trace.context|length > 200 %}...{% endif %}</p>
+    <div class="trace-item-tags">
+      {% for tag in trace.tags %}{% if not loop.first %}, {% endif %}<a href="{{ url('/tag/' + tag + '/') }}">{{ tag }}</a>{% endfor %}
+    </div>
+  </article>
+  {% endfor %}
+</div>
+
+<div class="browse-no-results" id="no-results">
+  <div class="browse-no-results-text">{{ t('browse.no_results') }}</div>
+  <div class="browse-no-results-hint">{{ t('browse.no_results_hint') }}</div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}

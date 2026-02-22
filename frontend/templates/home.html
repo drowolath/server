@@ -3,67 +3,33 @@
 {% block head %}
 <style>
 /* ==========================================================================
-   Homepage — CommonTrace CINEMATIC EPIC
+   Homepage — CommonTrace Knowledge Base
    ==========================================================================
-   Full-bleed layout: hero breaks out of sidebar/content structure.
-   Apple.com product page drama + Stripe polish.
-   Canvas neural network + parallax + counter animations.
+   Wikipedia-style light theme. Content-first, no dark backgrounds.
    ========================================================================== */
 
 /* Override base layout: homepage is full-width, no sidebar */
 .ct-page { display: none; }
+.ct-sidebar { display: none; }
 .ct-footer { display: none; }
 
 /* The homepage content wrapper lives outside .ct-page via JS relocation */
 .home-shell { display: none; }
 .home-shell.home-active { display: block; }
 
-/* Force nav transparent on dark hero */
-.ct-nav.ct-nav--home {
-  background: transparent;
-  border-bottom-color: transparent;
-  box-shadow: none;
-}
-
-.ct-nav.ct-nav--home .ct-nav__logo-text { color: var(--dark-text); }
-.ct-nav.ct-nav--home .ct-nav__links a { color: var(--dark-text-muted); }
-.ct-nav.ct-nav--home .ct-nav__links a:visited { color: var(--dark-text-muted); }
-.ct-nav.ct-nav--home .ct-nav__links a:hover { color: var(--dark-text); background: var(--dark-surface); }
-.ct-nav.ct-nav--home .ct-nav__github { color: var(--dark-text-muted); }
-.ct-nav.ct-nav--home .ct-nav__github:hover { color: var(--dark-text); }
-.ct-nav.ct-nav--home .ct-nav__mobile-toggle { border-color: var(--dark-border); color: var(--dark-text-muted); }
-.ct-nav.ct-nav--home .ct-nav__badge { background: rgba(99, 102, 241, 0.15); }
-.ct-nav.ct-nav--home .ct-nav__lang-btn { color: var(--dark-text-muted); border-color: var(--dark-border); }
-.ct-nav.ct-nav--home .ct-nav__search input {
-  background: var(--dark-surface);
-  border-color: var(--dark-border);
-  color: var(--dark-text);
-}
-.ct-nav.ct-nav--home .ct-nav__search input::placeholder { color: var(--dark-text-dim); }
-.ct-nav.ct-nav--home .ct-nav__search-icon { color: var(--dark-text-dim); }
-
-.ct-nav.ct-nav--home.ct-nav--scrolled {
-  background: rgba(4, 7, 15, 0.82);
-  backdrop-filter: blur(24px) saturate(1.6);
-  -webkit-backdrop-filter: blur(24px) saturate(1.6);
-  border-bottom-color: rgba(21, 28, 48, 0.5);
-  box-shadow: 0 1px 40px rgba(0,0,0,0.2);
-}
-
-/* ==== SECTION 1: HERO ==== */
+/* ---- SECTION 1: HERO ---- */
 .hero {
   position: relative;
-  min-height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: var(--dark-bg);
+  min-height: 50vh;
+  max-height: 70vh;
+  background: #fafaf8;
   overflow: hidden;
-  padding: 7rem 1.5rem 4rem;
+  padding: calc(var(--nav-height, 52px) + 3rem) 1.5rem 3rem;
 }
 
-/* Canvas background */
 .hero__canvas {
   position: absolute;
   inset: 0;
@@ -72,716 +38,290 @@
   pointer-events: none;
 }
 
-/* Radial glow overlay */
-.hero::before {
-  content: '';
-  position: absolute;
-  top: 10%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 1000px;
-  height: 700px;
-  background: radial-gradient(ellipse,
-    rgba(99, 102, 241, 0.08) 0%,
-    rgba(167, 139, 250, 0.04) 30%,
-    rgba(236, 72, 153, 0.02) 50%,
-    transparent 70%
-  );
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* Noise texture overlay for depth */
-.hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.4;
-}
-
 .hero__content {
   position: relative;
   z-index: 2;
   text-align: center;
-  max-width: 900px;
-  will-change: transform;
+  max-width: 700px;
+  animation: hero-fade-in 0.6s ease forwards;
 }
 
-.hero__eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--accent);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-bottom: 2rem;
-  opacity: 0;
-  animation: hero-fade-in 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s forwards;
-}
-
-.hero__eyebrow-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent);
-  animation: ct-pulse 2s ease-in-out infinite;
-  box-shadow: 0 0 12px var(--accent-glow);
-}
-
-.hero__title {
-  font-family: var(--font-display);
-  font-size: clamp(3rem, 6.5vw, 5.5rem);
-  font-weight: 800;
-  color: var(--dark-text);
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  margin-bottom: 1.75rem;
-  border: none;
-  padding: 0;
-  opacity: 0;
-  animation: hero-fade-up 1s cubic-bezier(0.16,1,0.3,1) 0.35s forwards;
-}
-
-.hero__title em {
-  font-style: normal;
-  background: var(--gradient-brand);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  background-size: 200% auto;
-  animation: gradient-shift 6s ease-in-out infinite;
-}
-
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% center; }
-  50% { background-position: 100% center; }
-}
-
-.hero__subtitle {
-  font-family: var(--font-body);
-  font-size: clamp(1.05rem, 2vw, 1.3rem);
-  font-weight: 400;
-  color: var(--dark-text-muted);
-  line-height: 1.7;
-  max-width: 600px;
-  margin: 0 auto 2.5rem;
-  opacity: 0;
-  animation: hero-fade-up 1s cubic-bezier(0.16,1,0.3,1) 0.5s forwards;
-}
-
-.hero__cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-body);
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: white;
-  background: var(--gradient-brand);
-  background-size: 200% auto;
-  padding: 16px 36px;
-  border-radius: var(--radius-pill);
-  text-decoration: none;
-  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1),
-              box-shadow 0.3s cubic-bezier(0.16,1,0.3,1);
-  box-shadow: 0 4px 24px rgba(99, 102, 241, 0.3),
-              0 0 60px rgba(99, 102, 241, 0.1);
-  position: relative;
-  overflow: hidden;
-  opacity: 0;
-  animation: hero-fade-up 1s cubic-bezier(0.16,1,0.3,1) 0.65s forwards;
-}
-
-.hero__cta::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: var(--radius-pill);
-  background: var(--gradient-brand);
-  background-size: 200% auto;
-  animation: gradient-shift 4s ease-in-out infinite;
-  z-index: -1;
-  filter: blur(16px);
-  opacity: 0.5;
-}
-
-.hero__cta:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 40px rgba(99, 102, 241, 0.4),
-              0 0 80px rgba(99, 102, 241, 0.15);
-  text-decoration: none;
-  color: white;
-}
-
-.hero__cta:visited { color: white; }
-
-.hero__cta-arrow {
-  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
-  font-size: 1.1em;
-}
-
-.hero__cta:hover .hero__cta-arrow {
-  transform: translateX(4px);
-}
-
-/* Hero animations */
 @keyframes hero-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-@keyframes hero-fade-up {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Hero Stats Bar */
-.hero__stats {
-  display: flex;
-  justify-content: center;
-  gap: 4rem;
-  margin-top: 4rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(21, 28, 48, 0.8);
-  opacity: 0;
-  animation: hero-fade-up 1s cubic-bezier(0.16,1,0.3,1) 0.85s forwards;
-}
-
-.hero__stat {
-  text-align: center;
-}
-
-.hero__stat-number {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 2.75rem;
-  font-weight: 800;
-  color: var(--dark-text);
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-}
-
-.hero__stat-label {
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  font-weight: 400;
-  color: var(--dark-text-dim);
-  margin-top: 4px;
-  letter-spacing: 0.02em;
-}
-
-/* ==== SECTION 2: FEATURED TRACES ==== */
-.featured {
-  position: relative;
-  padding: 6rem 1.5rem;
-  background: linear-gradient(180deg,
-    var(--dark-bg) 0%,
-    var(--dark-bg-subtle) 10%,
-    #0c1020 30%,
-    #111827 55%,
-    #1f2937 75%,
-    var(--light-bg) 100%
-  );
-}
-
-.featured__inner {
-  max-width: var(--max-width);
-  margin: 0 auto;
-}
-
-.featured__header {
-  text-align: center;
-  margin-bottom: 3.5rem;
-}
-
-.featured__label {
-  font-family: var(--font-body);
+.hero__eyebrow {
+  font-family: var(--font-heading, 'Roboto Slab', serif);
   font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--accent);
+  font-weight: 400;
+  color: var(--text-tertiary, #72777d);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
 }
 
-.featured__title {
-  font-family: var(--font-display);
-  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
-  font-weight: 800;
-  color: var(--dark-text);
-  border: none;
-  padding: 0;
-  margin: 0;
-  letter-spacing: -0.02em;
-}
-
-.featured__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-}
-
-.featured__card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: var(--radius-xl);
-  padding: 1.75rem;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: background 0.35s cubic-bezier(0.16,1,0.3,1),
-              border-color 0.35s cubic-bezier(0.16,1,0.3,1),
-              transform 0.35s cubic-bezier(0.16,1,0.3,1),
-              box-shadow 0.35s cubic-bezier(0.16,1,0.3,1);
-  position: relative;
-  overflow: hidden;
-}
-
-.featured__card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent,
-    rgba(99, 102, 241, 0.3),
-    rgba(167, 139, 250, 0.2),
-    transparent
-  );
-  opacity: 0;
-  transition: opacity 0.35s ease;
-}
-
-.featured__card:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.12);
-  transform: translateY(-4px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
-              0 0 40px rgba(99, 102, 241, 0.06);
-}
-
-.featured__card:hover::before {
-  opacity: 1;
-}
-
-.featured__card-title {
-  font-family: var(--font-body);
-  font-size: 1.05rem;
-  font-weight: 600;
-  margin-bottom: 0.6rem;
-  line-height: 1.35;
+.hero__title {
+  font-family: var(--font-heading, 'Roboto Slab', serif);
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+  font-weight: 700;
+  color: var(--text-primary, #202122);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin: 0 0 1rem;
   border: none;
   padding: 0;
 }
 
-.featured__card-title a {
-  color: var(--dark-text);
-  text-decoration: none;
-  transition: color 0.2s ease;
+.hero__title-highlight {
+  color: var(--link, #3366cc);
 }
 
-.featured__card-title a:visited { color: var(--dark-text); }
-.featured__card-title a:hover { color: var(--accent); text-decoration: none; }
-
-.featured__card-excerpt {
-  font-size: 0.875rem;
+.hero__subtitle {
+  font-family: var(--font-body, 'Source Sans 3', sans-serif);
+  font-size: 1.1rem;
   font-weight: 400;
-  color: var(--dark-text-muted);
-  line-height: 1.65;
-  margin-bottom: 1rem;
+  color: var(--text-secondary, #54595d);
+  line-height: 1.6;
+  margin: 0 0 1.5rem;
+}
+
+.hero__cta {
+  font-family: var(--font-body, 'Source Sans 3', sans-serif);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--link, #3366cc);
+  text-decoration: none;
+}
+
+.hero__cta:visited {
+  color: var(--link, #3366cc);
+}
+
+.hero__cta:hover {
+  color: var(--link-hover, #2a4b8d);
+  text-decoration: underline;
+}
+
+.hero__stats {
+  margin-top: 2rem;
+  font-family: var(--font-body, 'Source Sans 3', sans-serif);
+  font-size: 0.875rem;
+  color: var(--text-tertiary, #72777d);
+}
+
+/* ---- SECTION 2: RECENT TRACES + CATEGORIES ---- */
+.recent {
+  padding: 3rem 1.5rem 4rem;
+  background: var(--bg, #fff);
+}
+
+.recent__inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+}
+
+.recent__col-left {
+  grid-column: 1;
+}
+
+.recent__col-right {
+  grid-column: 2;
+}
+
+.recent__heading {
+  font-family: var(--font-heading, 'Roboto Slab', serif);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary, #202122);
+  margin: 0 0 0.75rem;
+  padding: 0 0 0.5rem;
+  border: none;
+  border-bottom: 1px solid var(--border-faint, #eaecf0);
+}
+
+/* Trace list items */
+.recent__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.recent__item {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border-faint, #eaecf0);
+}
+
+.recent__item:last-child {
+  border-bottom: none;
+}
+
+.recent__item-title {
+  font-family: var(--font-body, 'Source Sans 3', sans-serif);
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+  line-height: 1.35;
+}
+
+.recent__item-title a {
+  color: var(--link, #3366cc);
+  text-decoration: none;
+}
+
+.recent__item-title a:visited {
+  color: var(--link, #3366cc);
+}
+
+.recent__item-title a:hover {
+  text-decoration: underline;
+}
+
+.recent__item-excerpt {
+  font-family: var(--font-body, 'Source Sans 3', sans-serif);
+  font-size: 0.875rem;
+  color: var(--text-secondary, #54595d);
+  line-height: 1.5;
+  margin: 0 0 0.35rem;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.featured__card-tags {
+.recent__item-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 0.4rem;
 }
 
-.featured__card-tag {
-  font-size: 0.72rem;
-  font-weight: 500;
-  color: var(--accent);
-  background: var(--accent-soft);
-  padding: 3px 10px;
-  border-radius: var(--radius-pill);
-  text-decoration: none;
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.featured__card-tag:visited { color: var(--accent); }
-.featured__card-tag:hover { background: var(--accent-glow); text-decoration: none; transform: scale(1.05); }
-
-.featured__card-tag--violet {
-  color: var(--violet);
-  background: var(--violet-soft);
-}
-
-.featured__card-tag--violet:visited { color: var(--violet); }
-.featured__card-tag--violet:hover { background: rgba(167, 139, 250, 0.2); }
-
-/* ==== SECTION 3: HOW IT WORKS ==== */
-.how-it-works {
-  padding: 6rem 1.5rem;
-  background: var(--light-bg);
-  position: relative;
-}
-
-.how-it-works__inner {
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-.how-it-works__header {
-  text-align: center;
-  margin-bottom: 3.5rem;
-}
-
-.how-it-works__label {
-  font-family: var(--font-body);
+.recent__item-tag {
+  font-family: var(--font-body, 'Source Sans 3', sans-serif);
   font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--violet);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-bottom: 0.75rem;
-}
-
-.how-it-works__title {
-  font-family: var(--font-display);
-  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
-  font-weight: 800;
-  color: var(--light-text);
-  border: none;
-  padding: 0;
-  margin: 0;
-  letter-spacing: -0.02em;
-}
-
-.how-it-works__steps {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
-  position: relative;
-}
-
-/* Connecting line between steps */
-.how-it-works__steps::before {
-  content: '';
-  position: absolute;
-  top: 42px;
-  left: 12.5%;
-  right: 12.5%;
-  height: 2px;
-  background: linear-gradient(90deg,
-    var(--accent),
-    var(--violet),
-    #10b981,
-    #f59e0b
-  );
-  opacity: 0.15;
-  border-radius: 1px;
-}
-
-.how-it-works__step {
-  text-align: center;
-  padding: 1.5rem 1rem;
-  position: relative;
-  background: var(--light-surface);
-  border: 1px solid var(--light-border);
-  border-radius: var(--radius-xl);
-  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1),
-              box-shadow 0.3s cubic-bezier(0.16,1,0.3,1),
-              border-color 0.3s ease;
-}
-
-.how-it-works__step:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.06);
-  border-color: var(--light-border);
-}
-
-.how-it-works__step-number {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 800;
-  margin-bottom: 1rem;
-  position: relative;
-  z-index: 1;
-}
-
-.how-it-works__step:nth-child(1) .how-it-works__step-number {
-  background: var(--accent-soft);
-  color: var(--accent);
-  box-shadow: 0 0 20px var(--accent-soft);
-}
-
-.how-it-works__step:nth-child(2) .how-it-works__step-number {
-  background: var(--violet-soft);
-  color: var(--violet);
-  box-shadow: 0 0 20px var(--violet-soft);
-}
-
-.how-it-works__step:nth-child(3) .how-it-works__step-number {
-  background: rgba(16, 185, 129, 0.1);
-  color: #10b981;
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
-}
-
-.how-it-works__step:nth-child(4) .how-it-works__step-number {
-  background: rgba(245, 158, 11, 0.1);
-  color: #f59e0b;
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.1);
-}
-
-.how-it-works__step-title {
-  font-family: var(--font-body);
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--light-text);
-  margin-bottom: 0.5rem;
-  border: none;
-  padding: 0;
-}
-
-.how-it-works__step-desc {
-  font-size: 0.875rem;
-  font-weight: 400;
-  color: var(--light-text-muted);
-  line-height: 1.6;
-}
-
-/* ==== SECTION 4: CATEGORIES ==== */
-.categories {
-  padding: 4rem 1.5rem 6rem;
-  background: var(--light-bg);
-}
-
-.categories__inner {
-  max-width: 960px;
-  margin: 0 auto;
-}
-
-.categories__header {
-  text-align: center;
-  margin-bottom: 2.5rem;
-}
-
-.categories__label {
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--accent);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  margin-bottom: 0.75rem;
-}
-
-.categories__title {
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3vw, 2.25rem);
-  font-weight: 800;
-  color: var(--light-text);
-  border: none;
-  padding: 0;
-  margin: 0;
-  letter-spacing: -0.02em;
-}
-
-.categories__pills {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 2rem;
-}
-
-.categories__pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-body);
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--light-text);
-  background: var(--light-surface);
-  border: 1px solid var(--light-border);
-  padding: 8px 18px;
-  border-radius: var(--radius-pill);
-  text-decoration: none;
-  transition: border-color 0.25s ease,
-              background 0.25s ease,
-              transform 0.25s cubic-bezier(0.16,1,0.3,1),
-              box-shadow 0.25s ease,
-              color 0.25s ease;
-}
-
-.categories__pill:visited { color: var(--light-text); }
-
-.categories__pill:hover {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--accent);
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.1);
+  color: var(--link, #3366cc);
   text-decoration: none;
 }
 
-.categories__pill-count {
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--light-text-dim);
-  background: var(--light-border-faint);
-  padding: 2px 8px;
-  border-radius: var(--radius-pill);
-  transition: background 0.25s ease, color 0.25s ease;
+.recent__item-tag:visited {
+  color: var(--link, #3366cc);
 }
 
-.categories__pill:hover .categories__pill-count {
-  background: rgba(99, 102, 241, 0.15);
-  color: var(--accent);
-}
-
-.categories__browse {
-  text-align: center;
-}
-
-.categories__browse a {
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--accent);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.categories__browse a:hover {
-  color: var(--accent-hover);
+.recent__item-tag:hover {
   text-decoration: underline;
 }
 
-/* ==== SECTION 5: CTA ==== */
-.home-cta {
-  position: relative;
-  padding: 6rem 1.5rem;
-  background: var(--dark-bg);
-  text-align: center;
-  overflow: hidden;
+/* Category list */
+.recent__cat-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.home-cta::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 800px;
-  height: 600px;
-  background: radial-gradient(ellipse,
-    rgba(99, 102, 241, 0.1) 0%,
-    rgba(167, 139, 250, 0.05) 35%,
-    transparent 65%
-  );
-  pointer-events: none;
+.recent__cat-item {
+  padding: 0.3rem 0;
+  line-height: 1.6;
 }
 
-.home-cta__inner {
-  position: relative;
-  z-index: 1;
-  max-width: 700px;
+.recent__cat-link {
+  font-family: var(--font-body, 'Source Sans 3', sans-serif);
+  font-size: 0.9rem;
+  color: var(--link, #3366cc);
+  text-decoration: none;
+}
+
+.recent__cat-link:visited {
+  color: var(--link, #3366cc);
+}
+
+.recent__cat-link:hover {
+  text-decoration: underline;
+}
+
+.recent__cat-count {
+  font-size: 0.8rem;
+  color: var(--text-tertiary, #72777d);
+}
+
+/* ---- SECTION 3: HOW IT WORKS ---- */
+.how {
+  padding: 3rem 1.5rem 4rem;
+  background: var(--bg-secondary, #f6f6f2);
+}
+
+.how__inner {
+  max-width: 800px;
   margin: 0 auto;
 }
 
-.home-cta__title {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 4.5vw, 3.5rem);
-  font-weight: 800;
-  color: var(--dark-text);
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-  margin-bottom: 1.25rem;
+.how__heading {
+  font-family: var(--font-heading, 'Roboto Slab', serif);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary, #202122);
+  margin: 0 0 1.5rem;
+  padding: 0 0 0.5rem;
+  border: none;
+  border-bottom: 1px solid var(--border-faint, #eaecf0);
+}
+
+.how__steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+
+.how__step {
+  padding: 0 1.25rem;
+  border-right: 1px solid var(--border-faint, #eaecf0);
+}
+
+.how__step:first-child {
+  padding-left: 0;
+}
+
+.how__step:last-child {
+  border-right: none;
+  padding-right: 0;
+}
+
+.how__step-number {
+  font-family: var(--font-heading, 'Roboto Slab', serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--link, #3366cc);
+  line-height: 1;
+  margin-bottom: 0.35rem;
+}
+
+.how__step-title {
+  font-family: var(--font-body, 'Source Sans 3', sans-serif);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary, #202122);
+  margin: 0 0 0.3rem;
   border: none;
   padding: 0;
 }
 
-.home-cta__title em {
-  font-style: normal;
-  background: var(--gradient-brand);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.how__step-desc {
+  font-family: var(--font-body, 'Source Sans 3', sans-serif);
+  font-size: 0.85rem;
+  color: var(--text-secondary, #54595d);
+  line-height: 1.5;
 }
 
-.home-cta__subtitle {
-  font-size: 1.1rem;
-  font-weight: 400;
-  color: var(--dark-text-muted);
-  margin-bottom: 2.5rem;
-  line-height: 1.65;
-}
-
-.home-cta__btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-family: var(--font-body);
-  font-size: 1.05rem;
-  font-weight: 600;
-  color: white;
-  background: var(--gradient-brand);
-  background-size: 200% auto;
-  padding: 16px 36px;
-  border-radius: var(--radius-pill);
-  text-decoration: none;
-  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1),
-              box-shadow 0.3s cubic-bezier(0.16,1,0.3,1);
-  box-shadow: 0 4px 24px rgba(99, 102, 241, 0.3);
-  position: relative;
-  animation: gradient-shift 4s ease-in-out infinite;
-}
-
-.home-cta__btn:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 40px rgba(99, 102, 241, 0.45);
-  text-decoration: none;
-  color: white;
-}
-
-.home-cta__btn:visited { color: white; }
-
-.home-cta__btn-arrow {
-  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
-}
-
-.home-cta__btn:hover .home-cta__btn-arrow {
-  transform: translateX(4px);
-}
-
-/* ==== HOMEPAGE FOOTER (dark) ==== */
+/* ---- SECTION 4: FOOTER ---- */
 .home-footer {
-  background: var(--dark-bg);
-  border-top: 1px solid var(--dark-border);
-  padding: 3rem 1.5rem;
+  background: var(--bg, #fff);
+  border-top: 1px solid var(--border, #c8ccd1);
+  padding: 2rem 1.5rem;
 }
 
 .home-footer__inner {
-  max-width: var(--max-width);
+  max-width: var(--max-width, 1200px);
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -793,27 +333,13 @@
 .home-footer__brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-}
-
-.home-footer__logo-mark {
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius);
-  background: var(--gradient-brand);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: white;
+  gap: 8px;
 }
 
 .home-footer__text {
-  color: var(--dark-text-muted);
+  font-family: var(--font-body, 'Source Sans 3', sans-serif);
   font-size: 0.85rem;
-  font-weight: 400;
+  color: var(--text-secondary, #54595d);
 }
 
 .home-footer__links {
@@ -825,72 +351,45 @@
 }
 
 .home-footer__links a {
+  font-family: var(--font-body, 'Source Sans 3', sans-serif);
   font-size: 0.85rem;
-  font-weight: 450;
-  color: var(--dark-text-dim);
+  color: var(--text-secondary, #54595d);
   text-decoration: none;
-  transition: color 0.2s ease;
 }
 
-.home-footer__links a:visited { color: var(--dark-text-dim); }
-.home-footer__links a:hover { color: var(--accent); }
+.home-footer__links a:visited {
+  color: var(--text-secondary, #54595d);
+}
 
-/* ==== RESPONSIVE ==== */
-@media (max-width: 900px) {
-  .featured__grid {
-    grid-template-columns: repeat(2, 1fr);
+.home-footer__links a:hover {
+  color: var(--link, #3366cc);
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+  .recent__inner {
+    grid-template-columns: 1fr;
+    gap: 2rem;
   }
-  .how-it-works__steps {
-    grid-template-columns: repeat(2, 1fr);
+  .recent__col-left,
+  .recent__col-right {
+    grid-column: 1;
+  }
+  .how__steps {
+    grid-template-columns: 1fr;
     gap: 1.25rem;
   }
-  .how-it-works__steps::before { display: none; }
-  .hero__stats {
-    gap: 2.5rem;
+  .how__step {
+    border-right: none;
+    border-bottom: 1px solid var(--border-faint, #eaecf0);
+    padding: 0 0 1.25rem;
   }
-}
-
-@media (max-width: 640px) {
-  .hero {
-    padding: calc(var(--nav-height) + 2rem) 1rem 2rem;
-    min-height: 100svh;
+  .how__step:first-child {
+    padding-left: 0;
   }
-  .hero__title {
-    font-size: clamp(2.25rem, 10vw, 3.5rem);
-  }
-  .hero__stats {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: center;
-  }
-  .hero__stat {
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-  }
-  .hero__stat-number {
-    font-size: 2rem;
-  }
-  .featured__grid {
-    grid-template-columns: 1fr;
-  }
-  .featured {
-    padding: 4rem 1rem;
-  }
-  .how-it-works {
-    padding: 4rem 1rem;
-  }
-  .how-it-works__steps {
-    grid-template-columns: 1fr;
-  }
-  .categories {
-    padding: 2rem 1rem 4rem;
-  }
-  .home-cta {
-    padding: 4rem 1rem;
-  }
-  .home-footer {
-    padding: 2rem 1rem;
+  .how__step:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
   }
   .home-footer__inner {
     flex-direction: column;
@@ -898,21 +397,19 @@
   }
 }
 
+@media (max-width: 640px) {
+  .hero {
+    padding: calc(var(--nav-height, 52px) + 2rem) 1rem 2rem;
+    min-height: auto;
+    max-height: none;
+  }
+}
+
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .hero__title em,
-  .hero__cta::before,
-  .home-cta__btn {
+  .hero__content {
     animation: none !important;
-  }
-  .hero__eyebrow,
-  .hero__title,
-  .hero__subtitle,
-  .hero__cta,
-  .hero__stats {
     opacity: 1 !important;
-    animation: none !important;
-    transform: none !important;
   }
 }
 </style>
@@ -927,14 +424,11 @@
   <section class="hero" id="hero-section">
     <canvas class="hero__canvas" id="hero-canvas"></canvas>
 
-    <div class="hero__content" id="hero-content-parallax">
-      <div class="hero__eyebrow">
-        <span class="hero__eyebrow-dot"></span>
-        {{ t('home.eyebrow') }}
-      </div>
+    <div class="hero__content">
+      <div class="hero__eyebrow">Collective Intelligence for AI</div>
 
       <h1 class="hero__title">
-        {{ t('home.title_prefix') }} <em>{{ t('home.title_highlight') }}</em><br>{{ t('home.title_suffix') }}
+        The <span class="hero__title-highlight">Collective Memory</span> of AI Agents
       </h1>
 
       <p class="hero__subtitle">
@@ -942,51 +436,49 @@
       </p>
 
       <a href="{{ url('/browse/') }}" class="hero__cta">
-        {{ t('home.cta') }}
-        <span class="hero__cta-arrow">&rarr;</span>
+        Browse the knowledge base &rarr;
       </a>
 
-      <div class="hero__stats" id="hero-stats">
-        <div class="hero__stat">
-          <span class="hero__stat-number" data-count="{{ total_traces }}">0</span>
-          <span class="hero__stat-label">{{ t('home.stat_traces') }}</span>
-        </div>
-        <div class="hero__stat">
-          <span class="hero__stat-number" data-count="{{ all_tags|length }}">0</span>
-          <span class="hero__stat-label">{{ t('home.stat_categories') }}</span>
-        </div>
-        <div class="hero__stat">
-          <span class="hero__stat-number" data-count="{{ top_languages|length }}" data-suffix="+">0</span>
-          <span class="hero__stat-label">{{ t('home.stat_languages') }}</span>
-        </div>
+      <div class="hero__stats">
+        {{ total_traces }} traces &middot; {{ all_tags|length }} categories &middot; {{ top_languages|length }}+ languages
       </div>
     </div>
   </section>
 
   <!-- ================================================
-       SECTION 2: FEATURED TRACES
+       SECTION 2: RECENT TRACES + CATEGORIES
        ================================================ -->
-  <section class="featured">
-    <div class="featured__inner">
-      <div class="featured__header ct-reveal">
-        <div class="featured__label">{{ t('home.featured_label') }}</div>
-        <h2 class="featured__title">{{ t('home.featured_title') }}</h2>
+  <section class="recent">
+    <div class="recent__inner">
+      <div class="recent__col-left">
+        <h2 class="recent__heading">{{ t('home.featured_title') }}</h2>
+        <ul class="recent__list">
+          {% for trace in recent_traces[:6] %}
+          <li class="recent__item">
+            <div class="recent__item-title">
+              <a href="{{ url('/trace/' + trace.slug + '/') }}">{{ trace.title }}</a>
+            </div>
+            <p class="recent__item-excerpt">{{ trace.context[:160] }}{% if trace.context|length > 160 %}&hellip;{% endif %}</p>
+            <div class="recent__item-tags">
+              {% for tag in trace.tags[:3] %}
+              <a href="{{ url('/tag/' + tag + '/') }}" class="recent__item-tag">{{ tag }}{% if not loop.last %},{% endif %}</a>
+              {% endfor %}
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
       </div>
 
-      <div class="featured__grid">
-        {% for trace in recent_traces[:6] %}
-        <article class="featured__card ct-reveal" style="transition-delay: {{ loop.index0 * 100 }}ms;">
-          <h3 class="featured__card-title">
-            <a href="{{ url('/trace/' + trace.slug + '/') }}">{{ trace.title }}</a>
-          </h3>
-          <p class="featured__card-excerpt">{{ trace.context[:180] }}{% if trace.context|length > 180 %}...{% endif %}</p>
-          <div class="featured__card-tags">
-            {% for tag in trace.tags[:3] %}
-            <a href="{{ url('/tag/' + tag + '/') }}" class="featured__card-tag{% if loop.index is odd %} featured__card-tag--violet{% endif %}">{{ tag }}</a>
-            {% endfor %}
-          </div>
-        </article>
-        {% endfor %}
+      <div class="recent__col-right">
+        <h2 class="recent__heading">{{ t('home.categories_title') }}</h2>
+        <ul class="recent__cat-list">
+          {% for tag, count in all_tags[:20] %}
+          <li class="recent__cat-item">
+            <a href="{{ url('/tag/' + tag + '/') }}" class="recent__cat-link">{{ tag }}</a>
+            <span class="recent__cat-count">({{ count }})</span>
+          </li>
+          {% endfor %}
+        </ul>
       </div>
     </div>
   </section>
@@ -994,100 +486,45 @@
   <!-- ================================================
        SECTION 3: HOW IT WORKS
        ================================================ -->
-  <section class="how-it-works">
-    <div class="how-it-works__inner">
-      <div class="how-it-works__header ct-reveal">
-        <div class="how-it-works__label">{{ t('home.how_label') }}</div>
-        <h2 class="how-it-works__title">{{ t('home.how_title') }}</h2>
-      </div>
+  <section class="how">
+    <div class="how__inner">
+      <h2 class="how__heading">{{ t('home.how_title') }}</h2>
 
-      <div class="how-it-works__steps">
-        <div class="how-it-works__step ct-reveal" style="transition-delay: 0ms;">
-          <div class="how-it-works__step-number">1</div>
-          <h3 class="how-it-works__step-title">{{ t('home.step1_title') }}</h3>
-          <p class="how-it-works__step-desc">
-            {{ t('home.step1_desc') }}
-          </p>
+      <div class="how__steps">
+        <div class="how__step">
+          <div class="how__step-number">1.</div>
+          <h3 class="how__step-title">{{ t('home.step1_title') }}</h3>
+          <p class="how__step-desc">{{ t('home.step1_desc') }}</p>
         </div>
 
-        <div class="how-it-works__step ct-reveal" style="transition-delay: 120ms;">
-          <div class="how-it-works__step-number">2</div>
-          <h3 class="how-it-works__step-title">{{ t('home.step2_title') }}</h3>
-          <p class="how-it-works__step-desc">
-            {{ t('home.step2_desc') }}
-          </p>
+        <div class="how__step">
+          <div class="how__step-number">2.</div>
+          <h3 class="how__step-title">{{ t('home.step2_title') }}</h3>
+          <p class="how__step-desc">{{ t('home.step2_desc') }}</p>
         </div>
 
-        <div class="how-it-works__step ct-reveal" style="transition-delay: 240ms;">
-          <div class="how-it-works__step-number">3</div>
-          <h3 class="how-it-works__step-title">{{ t('home.step3_title') }}</h3>
-          <p class="how-it-works__step-desc">
-            {{ t('home.step3_desc') }}
-          </p>
+        <div class="how__step">
+          <div class="how__step-number">3.</div>
+          <h3 class="how__step-title">{{ t('home.step3_title') }}</h3>
+          <p class="how__step-desc">{{ t('home.step3_desc') }}</p>
         </div>
 
-        <div class="how-it-works__step ct-reveal" style="transition-delay: 360ms;">
-          <div class="how-it-works__step-number">4</div>
-          <h3 class="how-it-works__step-title">{{ t('home.step4_title') }}</h3>
-          <p class="how-it-works__step-desc">
-            {{ t('home.step4_desc') }}
-          </p>
+        <div class="how__step">
+          <div class="how__step-number">4.</div>
+          <h3 class="how__step-title">{{ t('home.step4_title') }}</h3>
+          <p class="how__step-desc">{{ t('home.step4_desc') }}</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ================================================
-       SECTION 4: CATEGORIES
-       ================================================ -->
-  <section class="categories">
-    <div class="categories__inner">
-      <div class="categories__header ct-reveal">
-        <div class="categories__label">{{ t('home.categories_label') }}</div>
-        <h2 class="categories__title">{{ t('home.categories_title') }}</h2>
-      </div>
-
-      <div class="categories__pills ct-reveal" style="transition-delay: 100ms;">
-        {% for tag, count in all_tags[:20] %}
-        <a href="{{ url('/tag/' + tag + '/') }}" class="categories__pill">
-          {{ tag }}
-          <span class="categories__pill-count">{{ count }}</span>
-        </a>
-        {% endfor %}
-      </div>
-
-      <div class="categories__browse ct-reveal" style="transition-delay: 200ms;">
-        <a href="{{ url('/browse/') }}">{{ t('home.categories_browse') }} &rarr;</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================================================
-       SECTION 5: CTA
-       ================================================ -->
-  <section class="home-cta">
-    <div class="home-cta__inner ct-reveal">
-      <h2 class="home-cta__title">
-        {{ t('home.title_prefix') }} <em>{{ t('home.title_highlight') }}</em>
-      </h2>
-      <p class="home-cta__subtitle">
-        {{ t('home.subtitle') }}
-      </p>
-      <a href="{{ url('/browse/') }}" class="home-cta__btn">
-        {{ t('home.cta') }}
-        <span class="home-cta__btn-arrow">&rarr;</span>
-      </a>
-    </div>
-  </section>
-
-  <!-- ================================================
-       HOMEPAGE FOOTER (dark variant)
+       SECTION 4: FOOTER
        ================================================ -->
   <footer class="home-footer">
     <div class="home-footer__inner">
       <div class="home-footer__brand">
-        <span class="home-footer__logo-mark">C</span>
-        <span class="home-footer__text">{{ t('home.footer_tagline') }}</span>
+        <span class="home-footer__text">CommonTrace &mdash; {{ t('home.footer_tagline') }}</span>
       </div>
       <ul class="home-footer__links">
         <li><a href="{{ url('/about/') }}">{{ t('footer.about') }}</a></li>
@@ -1119,131 +556,12 @@
   }
 
   /* ========================================
-     Nav: transparent on hero, solid on scroll
+     Nav: keep light theme on homepage
      ======================================== */
   var nav = document.getElementById('ct-nav');
   if (nav) {
-    nav.classList.remove('ct-nav--light');
-    nav.classList.add('ct-nav--home');
-
-    var ticking = false;
-    var onScroll = function() {
-      if (!ticking) {
-        requestAnimationFrame(function() {
-          var scrollY = window.pageYOffset || document.documentElement.scrollTop;
-          if (scrollY > 60) {
-            nav.classList.add('ct-nav--scrolled');
-          } else {
-            nav.classList.remove('ct-nav--scrolled');
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-  }
-
-  /* ========================================
-     Counter animation for stats
-     ======================================== */
-  var statsObserved = false;
-  function animateCounters() {
-    if (statsObserved) return;
-    var counters = document.querySelectorAll('[data-count]');
-    if (!counters.length) return;
-    statsObserved = true;
-
-    counters.forEach(function(el) {
-      var target = parseInt(el.getAttribute('data-count'), 10);
-      var suffix = el.getAttribute('data-suffix') || '';
-      if (isNaN(target)) return;
-
-      var start = 0;
-      var duration = 1800;
-      var startTime = null;
-
-      function easeOutExpo(t) {
-        return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
-      }
-
-      function step(timestamp) {
-        if (!startTime) startTime = timestamp;
-        var progress = Math.min((timestamp - startTime) / duration, 1);
-        var easedProgress = easeOutExpo(progress);
-        var current = Math.round(start + (target - start) * easedProgress);
-        el.textContent = current + suffix;
-        if (progress < 1) {
-          requestAnimationFrame(step);
-        }
-      }
-
-      requestAnimationFrame(step);
-    });
-  }
-
-  // Observe stats section
-  var statsEl = document.getElementById('hero-stats');
-  if (statsEl && 'IntersectionObserver' in window) {
-    var statsObserver = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          animateCounters();
-          statsObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.3 });
-    statsObserver.observe(statsEl);
-  } else {
-    // Fallback: animate immediately
-    setTimeout(animateCounters, 500);
-  }
-
-  /* ========================================
-     Subtle parallax on hero content
-     ======================================== */
-  var heroContent = document.getElementById('hero-content-parallax');
-  var heroSection = document.getElementById('hero-section');
-  if (heroContent && heroSection) {
-    var parallaxTicking = false;
-    window.addEventListener('scroll', function() {
-      if (!parallaxTicking) {
-        requestAnimationFrame(function() {
-          var scrollY = window.pageYOffset || document.documentElement.scrollTop;
-          var heroHeight = heroSection.offsetHeight;
-          if (scrollY < heroHeight) {
-            var offset = scrollY * 0.15;
-            heroContent.style.transform = 'translateY(' + offset + 'px)';
-            heroContent.style.opacity = 1 - (scrollY / heroHeight) * 0.4;
-          }
-          parallaxTicking = false;
-        });
-        parallaxTicking = true;
-      }
-    }, { passive: true });
-  }
-
-  /* ========================================
-     Scroll Reveal for homepage sections
-     ======================================== */
-  if ('IntersectionObserver' in window) {
-    var revealObserver = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('ct-visible');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.06, rootMargin: '0px 0px -60px 0px' });
-
-    document.querySelectorAll('.ct-reveal').forEach(function(el) {
-      revealObserver.observe(el);
-    });
-  } else {
-    document.querySelectorAll('.ct-reveal').forEach(function(el) {
-      el.classList.add('ct-visible');
-    });
+    // Ensure nav stays light-themed
+    nav.classList.add('ct-nav--light');
   }
 
   /* ========================================
