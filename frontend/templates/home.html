@@ -74,34 +74,6 @@
 }
 
 .hero__title-highlight {
-  color: #20123a;
-  display: inline-block;
-}
-
-/* Letter-by-letter reveal */
-.hero-letter {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(30px) scale(0.7);
-  filter: blur(6px);
-  animation: hero-letter-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-/* Whitespace letter needs width */
-.hero-letter--space {
-  width: 0.3em;
-}
-
-@keyframes hero-letter-in {
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
-  }
-}
-
-/* Phase 2: Shimmer sweep */
-.hero__title-highlight.shimmer-active {
   background: linear-gradient(
     90deg,
     #20123a 0%,
@@ -115,15 +87,6 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: shimmer 4s ease-in-out infinite;
-}
-
-.hero__title-highlight.shimmer-active .hero-letter {
-  display: inline;
-  animation: none;
-  opacity: 1;
-  transform: none;
-  filter: none;
-  -webkit-text-fill-color: transparent;
 }
 
 @keyframes shimmer {
@@ -465,13 +428,7 @@
     animation: none !important;
     opacity: 1 !important;
   }
-  .hero-letter {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-    filter: none !important;
-  }
-  .hero__title-highlight.shimmer-active {
+  .hero__title-highlight {
     animation: none !important;
     background: none !important;
     -webkit-text-fill-color: #20123a !important;
@@ -639,36 +596,6 @@
     }
   }
 
-  /* ========================================
-     "Collective Memory" letter reveal + shimmer
-     ======================================== */
-  var highlight = document.querySelector('.hero__title-highlight');
-  if (highlight) {
-    var text = highlight.textContent;
-    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var startDelay = 300; // ms — wait for hero fade-in
-    var stagger = 50;     // ms between each letter
-
-    // Split into letter spans
-    highlight.textContent = '';
-    for (var i = 0; i < text.length; i++) {
-      var span = document.createElement('span');
-      span.className = 'hero-letter' + (text[i] === ' ' ? ' hero-letter--space' : '');
-      span.textContent = text[i];
-      if (!prefersReduced) {
-        span.style.animationDelay = (startDelay + i * stagger) + 'ms';
-      }
-      highlight.appendChild(span);
-    }
-
-    // Phase 2: activate shimmer after all letters have landed
-    if (!prefersReduced) {
-      var totalRevealTime = startDelay + text.length * stagger + 500; // +500 for last letter anim
-      setTimeout(function() {
-        highlight.classList.add('shimmer-active');
-      }, totalRevealTime);
-    }
-  }
 
 })();
 </script>
