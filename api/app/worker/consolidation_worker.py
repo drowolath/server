@@ -22,6 +22,8 @@ from app.config import settings
 from app.database import async_session_factory
 from app.models.consolidation_run import ConsolidationRun
 from app.models.trace import Trace
+from sqlalchemy.orm import selectinload
+
 from app.services.convergence import detect_convergence_clusters
 from app.services.maturity import MaturityTier, get_decay_multiplier, get_maturity_tier, should_apply_temporal_decay
 from app.services.temperature import classify_temperature
@@ -170,6 +172,165 @@ async def _detect_convergence(session) -> int:
     return await detect_convergence_clusters(session)
 
 
+async def _narrative_synthesis(session) -> int:
+    """Synthesize pattern traces from mature convergence clusters.
+
+    For each cluster with 5+ episodic traces and no existing pattern trace,
+    generates a synthesized pattern trace via Claude.
+    """
+    from sqlalchemy import insert, select, text
+    from app.models.tag import Tag, trace_tags as trace_tags_table
+    from app.services.narrative import NarrativeService, NarrativeSkippedError
+    from app.services.enrichment import auto_enrich_metadata, compute_depth_score
+    from app.services.context import build_context_fingerprint
+    from app.services.tags import normalize_tag, validate_tag
+
+    narrative_svc = NarrativeService()
+
+    # Find clusters with 5+ episodic traces that lack a pattern trace
+    cluster_query = await session.execute(
+        text(
+            "SELECT convergence_cluster_id, convergence_level, COUNT(*) as trace_count "
+            "FROM traces "
+            "WHERE convergence_cluster_id IS NOT NULL "
+            "AND trace_type = 'episodic' "
+            "AND is_flagged = FALSE "
+            "GROUP BY convergence_cluster_id, convergence_level "
+            "HAVING COUNT(*) >= 5"
+        )
+    )
+    candidates = cluster_query.all()
+    if not candidates:
+        return 0
+
+    patterns_created = 0
+
+    for cluster_row in candidates[:settings.narrative_max_clusters_per_cycle]:
+        cluster_id = cluster_row.convergence_cluster_id
+        convergence_level = cluster_row.convergence_level or 4
+
+        # Skip if pattern trace already exists for this cluster
+        existing = await session.execute(
+            select(Trace.id)
+            .where(Trace.convergence_cluster_id == cluster_id)
+            .where(Trace.trace_type == "pattern")
+            .limit(1)
+        )
+        if existing.scalar_one_or_none() is not None:
+            continue
+
+        # Load source traces
+        source_result = await session.execute(
+            select(Trace)
+            .where(Trace.convergence_cluster_id == cluster_id)
+            .where(Trace.trace_type == "episodic")
+            .where(Trace.is_flagged.is_(False))
+            .options(selectinload(Trace.tags))
+            .order_by(Trace.trust_score.desc())
+            .limit(10)
+        )
+        source_traces = source_result.scalars().all()
+        if len(source_traces) < 5:
+            continue
+
+        # Build input for synthesis
+        trace_dicts = [
+            {
+                "title": t.title,
+                "context_text": t.context_text,
+                "solution_text": t.solution_text,
+                "tags": [tag.name for tag in t.tags],
+                "trust_score": t.trust_score,
+            }
+            for t in source_traces
+        ]
+
+        try:
+            synthesis = await narrative_svc.synthesize_cluster(
+                trace_dicts, convergence_level
+            )
+        except NarrativeSkippedError:
+            log.warning("narrative_synthesis_skipped_no_api_key")
+            return patterns_created
+        except Exception:
+            log.error(
+                "narrative_synthesis_failed",
+                cluster_id=str(cluster_id),
+                exc_info=True,
+            )
+            continue
+
+        # Create pattern trace
+        avg_trust = sum(t.trust_score for t in source_traces) / len(source_traces)
+        pattern_trace = Trace(
+            title=synthesis["title"],
+            context_text=synthesis["context_text"],
+            solution_text=synthesis["solution_text"],
+            trace_type="pattern",
+            trust_score=avg_trust,
+            status="validated",
+            contributor_id=source_traces[0].contributor_id,
+            convergence_cluster_id=cluster_id,
+            convergence_level=convergence_level,
+            memory_temperature="WARM",
+            metadata_json={
+                "source_count": len(source_traces),
+                "synthesis_model": "claude-haiku-4-5",
+            },
+        )
+        session.add(pattern_trace)
+        await session.flush()
+
+        # Process tags
+        for raw_tag in synthesis.get("tags", []):
+            normalized = normalize_tag(raw_tag)
+            if not validate_tag(normalized):
+                continue
+            tag_result = await session.execute(
+                select(Tag).where(Tag.name == normalized)
+            )
+            tag = tag_result.scalar_one_or_none()
+            if tag is None:
+                tag = Tag(name=normalized)
+                session.add(tag)
+                await session.flush()
+            await session.execute(
+                insert(trace_tags_table).values(
+                    trace_id=pattern_trace.id, tag_id=tag.id
+                )
+            )
+
+        # Create PATTERN_SOURCE relationships
+        for source_trace in source_traces:
+            await session.execute(
+                text(
+                    "INSERT INTO trace_relationships "
+                    "(id, source_trace_id, target_trace_id, relationship_type, strength) "
+                    "VALUES (gen_random_uuid(), :pattern_id, :source_id, 'PATTERN_SOURCE', 1.0) "
+                    "ON CONFLICT (source_trace_id, target_trace_id, relationship_type) DO NOTHING"
+                ),
+                {"pattern_id": str(pattern_trace.id), "source_id": str(source_trace.id)},
+            )
+
+        # Enrich metadata and compute depth/fingerprint
+        enriched = auto_enrich_metadata(pattern_trace.metadata_json, pattern_trace.solution_text)
+        pattern_trace.metadata_json = enriched
+        pattern_trace.depth_score = compute_depth_score(enriched, pattern_trace.solution_text)
+        tag_names = synthesis.get("tags", [])
+        pattern_trace.context_fingerprint = build_context_fingerprint(enriched, tag_names)
+
+        patterns_created += 1
+        log.info(
+            "pattern_trace_created",
+            pattern_id=str(pattern_trace.id),
+            cluster_id=str(cluster_id),
+            source_count=len(source_traces),
+        )
+
+    await session.flush()
+    return patterns_created
+
+
 async def run_consolidation_cycle() -> dict:
     """Execute one full consolidation cycle.
 
@@ -211,9 +372,10 @@ async def run_consolidation_cycle() -> dict:
             ("prospective_staled", _check_prospective_memory(session)),
         ]
 
-        # Convergence detection only runs in GROWING and MATURE tiers
+        # Convergence detection + narrative synthesis only in GROWING/MATURE
         if tier in (MaturityTier.GROWING, MaturityTier.MATURE):
             jobs.append(("convergence_detected", _detect_convergence(session)))
+            jobs.append(("patterns_synthesized", _narrative_synthesis(session)))
 
         for job_name, coro in jobs:
             try:

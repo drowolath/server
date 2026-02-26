@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     rate_limit_write_per_minute: int = 20
     api_key_header_name: str = "X-API-Key"
     openai_api_key: str = ""
+    anthropic_api_key: str = ""
 
     # Temporal decay
     temporal_decay_default_half_life_days: int = 365
@@ -21,6 +22,7 @@ class Settings(BaseSettings):
     # Consolidation worker
     consolidation_interval_hours: int = 24
     consolidation_stale_age_days: int = 180
+    narrative_max_clusters_per_cycle: int = 5
 
 
 settings = Settings()
